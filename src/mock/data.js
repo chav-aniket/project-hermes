@@ -1,5 +1,3 @@
-import { nanoid } from 'nanoid';
-
 // HEAD DATA
 export const headData = {
   title: 'Aniket Chavan | Full-Stack Dev',
@@ -11,5 +9,6 @@ export const headData = {
 export const heroData = {
   title: 'Hi, my name is ',
   name: 'Aniket Chavan',
-  subtitle: "I'm the Unknown Developer.",
+  subtitle: "I'm a Full-Stack Developer.",
+  cta: 'Here are some links for you',
 };
