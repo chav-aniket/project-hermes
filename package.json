@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.0.2",
-    "gatsby": "^2.23.7",
+    "gatsby": "^3.9.1",
     "gatsby-image": "^3.9.0",
     "gatsby-plugin-manifest": "^2.4.12",
     "gatsby-plugin-offline": "^3.2.11",
