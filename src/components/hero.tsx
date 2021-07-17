@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 import { Container } from 'react-bootstrap';
-import { useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql } from "gatsby";
 import Fade from 'react-reveal/Fade';
 import Socials from './socials';
 
