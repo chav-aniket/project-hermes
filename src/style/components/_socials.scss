@@ -1,0 +1,7 @@
+svg {
+  fill: $primary-color;
+
+  &:hover {
+    fill: $secondary-color;
+  }
+}
