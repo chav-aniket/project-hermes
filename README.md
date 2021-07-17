@@ -1,4 +1,5 @@
-# Aniket's Perosonal Website
+# Aniket's Personal Website
 
-Icons from <https://iconmonstr.com>
-Template from <https://github.com/cobidev/gatsby-simplefolio>
+Icons from <https://fontawesome.com>
+
+Inspired by <https://github.com/cobidev/gatsby-simplefolio>
