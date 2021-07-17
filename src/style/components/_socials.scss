@@ -2,8 +2,10 @@
   fill: white;
   margin: 0px 1%;
   font-size: 7rem;
+  cursor: pointer;
 
   &:hover {
+    transition: 5ms;
     color: $secondary-color;
   }
 }
@@ -28,7 +30,7 @@
 
 .resume {
   @extend %fa-icon;
-  @extend .fab;
+  @extend .fas;
 
   &:before {
     content: fa-content($fa-var-file-pdf);
