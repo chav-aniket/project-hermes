@@ -1,22 +1,37 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import App from '../components/App';
-import { headData } from '../mock/data';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../style/main.scss';
+import * as React from "react"
+// import { Link } from "gatsby"
+// import { StaticImage } from "gatsby-plugin-image"
 
-export default () => {
-  const { title, lang, description } = headData;
+import Layout from "../components/layout"
+import Seo from "../components/seo"
+import Hero from "../components/hero"
 
-  return (
-    <>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>{title}</title>
-        <html lang={lang} />
-        <meta name="description" content={description} />
-      </Helmet>
-      <App />
-    </>
-  );
-};
+const IndexPage = () => (
+  <Layout>
+    <Seo title="Home" />
+    <Hero />
+  </Layout>
+)
+
+// const IndexPage = () => (
+//   <Layout>
+//     <Seo title="Home" />
+//     <h1>Hi people</h1>
+//     <p>Welcome to your new Gatsby site.</p>
+//     <p>Now go build something great.</p>
+//     <StaticImage
+//       src="../images/gatsby-astronaut.png"
+//       width={300}
+//       quality={95}
+//       formats={["AUTO", "WEBP", "AVIF"]}
+//       alt="A Gatsby astronaut"
+//       style={{ marginBottom: `1.45rem` }}
+//     />
+//     <p>
+//       <Link to="/page-2/">Go to page 2</Link> <br />
+//       <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
+//     </p>
+//   </Layout>
+// )
+
+export default IndexPage

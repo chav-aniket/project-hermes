@@ -1,3 +1,4 @@
-# Portfolio Website
+# Aniket's Perosonal Website
 
-Template made by https://github.com/cobidev
+Icons from <https://iconmonstr.com>
+Template from <https://github.com/cobidev>

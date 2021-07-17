@@ -1,35 +1,54 @@
 module.exports = {
+  siteMetadata: {
+    title: `Chavaniket's Outlet`,
+    description: `My personal folio site`,
+    author: `@chav-aniket`,
+    siteUrl: `https://chavaniket.dev/`,
+    heroTitle: `Hi 🙋🏽‍♂️ my name is `,
+    heroName: `Aniket Chavan`,
+    heroSubtitle: `I'm a Full-Stack Developer.`,
+    heroCta: `Here are some links for you`
+  },
+  flags: {
+    FAST_DEV: true,
+    PARALLEL_SOURCING: true,
+    PRESERVE_FILE_DOWNLOAD_CACHE: true
+  },
   plugins: [
-    `gatsby-plugin-sass`,
     `gatsby-plugin-react-helmet`,
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
-    `gatsby-plugin-offline`,
+    `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `images`,
-        path: `${__dirname}/src/images/`,
+        path: `${__dirname}/src/images`,
       },
     },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `pages`,
-        path: `${__dirname}/src/pages/`,
-      },
-    },
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Gatsby Simplefolio`,
-        short_name: `Simplefolio`,
+        name: `Aniket's Site`,
+        short_name: `chav_aniket`,
         start_url: `/`,
-        background_color: `#fff`,
-        theme_color: `#02aab0`,
-        display: `standalone`,
-        icon: 'src/images/favicon.png',
+        background_color: `#663399`,
+        theme_color: `#663399`,
+        display: `minimal-ui`,
+        icon: `src/images/favicon.png`, // This path is relative to the root of the site.
       },
     },
+    // this (optional) plugin enables Progressive Web App + Offline functionality
+    // To learn more, visit: https://gatsby.dev/offline
+    `gatsby-plugin-offline`,
+    {
+      resolve: `gatsby-plugin-typescript`,
+      options: {
+        isTSX: true, // defaults to false
+        jsxPragma: `jsx`, // defaults to "React"
+        allExtensions: true, // defaults to false
+      },
+    },
+    `gatsby-plugin-sass`,
   ],
-};
+}
