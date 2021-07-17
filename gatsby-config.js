@@ -6,8 +6,7 @@ module.exports = {
     siteUrl: `https://chavaniket.dev/`,
     heroTitle: `Hi 🙋🏽‍♂️ my name is `,
     heroName: `Aniket Chavan`,
-    heroSubtitle: `I'm a Full-Stack Developer.`,
-    heroCta: `Here are some links for you`
+    heroSubtitle: `I'm a Comp Sci Student @UNSW`
   },
   flags: {
     FAST_DEV: true,
