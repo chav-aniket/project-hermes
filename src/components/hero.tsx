@@ -9,8 +9,7 @@ type DataProps = {
     siteMetadata: {
       heroTitle: String,
       heroName: String,
-      heroSubtitle: String,
-      heroCta: String
+      heroSubtitle: String
     }
   }
 }
@@ -23,7 +22,6 @@ const Hero = (): ReactElement => {
           heroTitle
           heroName
           heroSubtitle
-          heroCta
         }
       }
     }
