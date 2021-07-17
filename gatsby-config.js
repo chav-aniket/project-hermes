@@ -1,12 +1,12 @@
 module.exports = {
   siteMetadata: {
-    title: `Chavaniket's Outlet`,
+    title: `Chav Dev`,
     description: `My personal folio site`,
     author: `@chav-aniket`,
     siteUrl: `https://chavaniket.dev/`,
-    heroTitle: `Hi 🙋🏽‍♂️ my name is `,
+    heroTitle: `Hi 👋🏽, my name is `,
     heroName: `Aniket Chavan`,
-    heroSubtitle: `I'm a Comp Sci Student @UNSW`
+    heroSubtitle: `Comp Sci Student @UNSW`
   },
   flags: {
     FAST_DEV: true,
@@ -28,11 +28,11 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Aniket's Site`,
-        short_name: `chav_aniket`,
+        name: `Chav Dev`,
+        short_name: `@chav-aniket`,
         start_url: `/`,
-        background_color: `#663399`,
-        theme_color: `#663399`,
+        background_color: `#042009`,
+        theme_color: `#eba76c`,
         display: `minimal-ui`,
         icon: `src/images/favicon.png`, // This path is relative to the root of the site.
       },

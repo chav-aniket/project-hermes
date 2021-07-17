@@ -5,7 +5,8 @@
   cursor: pointer;
 
   &:hover {
-    transition: 50ms;
+    transition: 10ms;
+    font-size: 7.5rem;
     color: $secondary-color;
   }
 }
