@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactElement } from 'react';
 import { Container } from 'react-bootstrap';
 import { useStaticQuery, graphql } from "gatsby"
 import Fade from 'react-reveal/Fade';
-import { LinkedIn, Github, Resume } from './socials';
+import Socials from './socials';
 
 type DataProps = {
   site: {
@@ -54,11 +54,7 @@ const Hero = (): ReactElement => {
           </h1>
         </Fade>
         <Fade left={isDesktop} bottom={isMobile} duration={1000} delay={1000} distance="30px">
-          <span>
-            <LinkedIn />
-            <Github />
-            <Resume />
-          </span>
+          <Socials />
         </Fade>
       </Container>
     </section>

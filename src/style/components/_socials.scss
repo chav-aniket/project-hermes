@@ -1,7 +1,35 @@
-svg {
-  fill: $primary-color;
+.icon {
+  fill: white;
+  margin: 0px 4;
 
   &:hover {
     fill: $secondary-color;
+  }
+}
+
+.github {
+  @extend %fa-icon;
+  @extend .fab;
+
+  &:before {
+    content: fa-content($fa-var-github);
+  }
+}
+
+.linkedin {
+  @extend %fa-icon;
+  @extend .fab;
+
+  &:before {
+    content: fa-content($fa-var-github);
+  }
+}
+
+.resume {
+  @extend %fa-icon;
+  @extend .fab;
+
+  &:before {
+    content: fa-content($fa-var-github);
   }
 }
