@@ -1,3 +1,7 @@
+@import "./fontawesome/scss/fontawesome.scss";
+@import "./fontawesome/scss/solid.scss";
+@import "./fontawesome/scss/brands.scss";
+
 @import './abstracts/mixins';
 @import './abstracts/variables';
 @import './abstracts/helpers';
@@ -11,5 +15,3 @@
 @import './layout/sections';
 
 @import './sections/hero';
-
-@import './vendor/css/font-awesome.min.css';
