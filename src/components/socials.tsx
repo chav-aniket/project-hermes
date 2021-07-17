@@ -5,11 +5,11 @@ const Icon = (props: { cls: string; url: string }) => (
 );
 
 const Socials = () => (
-  <React.Fragment>
+  <div className="icons-container">
     <Icon cls='github' url='https://github.com/chav-aniket' />
     <Icon cls='linkedin' url='https://www.linkedin.com/in/chavaniket' />
     <Icon cls='resume' url='/resume.pdf' />
-  </React.Fragment>
+  </div>
 );
 
 export default Socials;

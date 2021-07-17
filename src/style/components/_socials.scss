@@ -1,13 +1,18 @@
+.icons-container {
+  line-height: 1.4rem;
+}
+
 .icon {
   fill: white;
-  margin: 0px 1%;
+  margin: 0px 2%;
   font-size: 7rem;
   cursor: pointer;
 
   &:hover {
-    transition: 10ms;
-    font-size: 7.5rem;
-    color: $secondary-color;
+    transition: 500ms;
+    line-height: 1.25rem;
+    font-size: 8rem;
+    color: $primary-color;
   }
 }
 
