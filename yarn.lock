@@ -5867,15 +5867,15 @@ gatsby-page-utils@^1.10.0:
     lodash "^4.17.21"
     micromatch "^4.0.2"
 
-gatsby-plugin-gatsby-cloud@^2.9.1:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-gatsby-cloud/-/gatsby-plugin-gatsby-cloud-2.9.1.tgz#d295be499f439b9b7608f06ff451ed654104a73c"
-  integrity sha512-cs3bb5a+7hZYw5Mx0t40tC672IKKwn6/yRJfazRfgJ4IBE/bEpAfj8x4yzC9vKqdLjCkz1TbTwLOhVEqfBxyzA==
+gatsby-plugin-gatsby-cloud@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-gatsby-cloud/-/gatsby-plugin-gatsby-cloud-2.10.0.tgz#1115883b0e63d22f6fb252aac47eb28e5996da9f"
+  integrity sha512-KH0ADQfUsS7kHlMiezV3NnEL+IVd4879qWPWMFyri4rkhzZrIQErKMMTXeJxYzrSoPx3EqDCaSreQAKG5LxGKA==
   dependencies:
-    "@babel/runtime" "^7.14.0"
+    "@babel/runtime" "^7.14.6"
     date-fns "^2.22.1"
     fs-extra "^8.1.0"
-    gatsby-telemetry "^2.9.0"
+    gatsby-telemetry "^2.10.0"
     kebab-hash "^0.1.2"
     lodash "^4.17.21"
     webpack-assets-manifest "^5.0.6"
@@ -11248,7 +11248,7 @@ shallow-compare@^1.2.2:
   resolved "https://registry.yarnpkg.com/shallow-compare/-/shallow-compare-1.2.2.tgz#fa4794627bf455a47c4f56881d8a6132d581ffdb"
   integrity sha512-LUMFi+RppPlrHzbqmFnINTrazo0lPNwhcgzuAXVVcfy/mqPDrQmHAyz5bvV0gDAuRFrk804V0HpQ6u9sZ0tBeg==
 
-sharp@^0.28.0, sharp@^0.28.1, sharp@^0.28.3:
+sharp@^0.28.1, sharp@^0.28.3:
   version "0.28.3"
   resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.28.3.tgz#ecd74cefd020bee4891bb137c9850ee2ce277a8b"
   integrity sha512-21GEP45Rmr7q2qcmdnjDkNP04Ooh5v0laGS5FDpojOO84D1DJwUijLiSq8XNNM6e8aGXYtoYRh3sVNdm8NodMA==
