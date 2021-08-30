@@ -6,7 +6,7 @@
   "author": "Aniket Chavan <aniket.chavan360@gmail.com",
   "dependencies": {
     "bootstrap": "^5.0.2",
-    "gatsby": "^3.11.0",
+    "gatsby": "^3.12.1",
     "gatsby-plugin-gatsby-cloud": "^2.11.0",
     "gatsby-plugin-image": "^1.11.0",
     "gatsby-plugin-manifest": "^3.11.0",
