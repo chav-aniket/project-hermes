@@ -48,13 +48,13 @@ const FuturePage = () => {
     <Layout>
       <Seo title="Home" />
       <div style={{
-        fontSize: "300%",
+        fontSize: "200%",
         position: "absolute",
         left: "50%",
         top: "50%",
         transform: "translate(-50%, -50%)",
         padding: "10px",
-        width: "max-content",
+        width: "auto",
         color: "#206292"
       }}>
         <ContentElem />
