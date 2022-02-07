@@ -32,10 +32,10 @@ const ContentElem = () => {
         .deleteAll()
         .typeString(`Will you brie my peng-nang 🍛?`)
         .pauseFor(1500)
-        .deleteChars(12)
+        .deleteChars(13)
         .typeString(`flambae? 🔥`)
         .pauseFor(1500)
-        .deleteChars(10)
+        .deleteChars(11)
         .typeString(`2022 Valentine? 💞`)
         .start();
       }}
