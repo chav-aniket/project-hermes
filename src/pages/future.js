@@ -30,13 +30,13 @@ const ContentElem = () => {
         .typeString(`I wanted to 🌮 bout a question I had 🤔`)
         .pauseFor(1500)
         .deleteAll()
-        .typeString(`Will you be my peng-nang 🍛?`)
+        .typeString(`Will you brie my peng-nang 🍛?`)
         .pauseFor(1500)
-        .deleteAll()
-        .typeString(`Will you be my flambae? 🔥`)
+        .deleteChars(12)
+        .typeString(`flambae? 🔥`)
         .pauseFor(1500)
-        .deleteAll()
-        .typeString(`Will you brie my 2022 Valentine? 💞`)
+        .deleteChars(10)
+        .typeString(`2022 Valentine? 💞`)
         .start();
       }}
     />
