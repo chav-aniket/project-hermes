@@ -1,0 +1,47 @@
+---
+import dayjs from 'dayjs';
+
+import Layout from '../layouts/Layout.astro';
+import Age from '../components/Age';
+
+const age =  dayjs().diff(dayjs('2000-10-01'), 'year', true);
+
+---
+
+<Layout title="Homepage">
+    <main 
+    class="
+        text-white sm:text-blue md:text-red
+        m-20 lg:m-80 duration-300"
+    >
+        <div aria-details="Aniket's metadata"></div>
+        <div>
+            <h1 class="
+            text-2xl my-10 md:text-3xl
+            lg:text-4xl xl:text-5xl
+            ">
+                Hi 👋🏽 I'm Aniket,<br>
+                Software Engineer @Atlassian.
+            </h1>
+
+            <p class="">
+                I'm a <Age client:idle /> year old developer who enjoys working on 
+                full-stack applications, writing clean code and ensuring
+                top of the line DevEx.
+            </p>
+        </div>
+        <div>
+            <h2 class="
+            text-xl my-10 md:text-2xl
+            lg:text-3xl xl:text-4xl
+            ">
+                What am I working on?
+            </h2>
+            <p>
+                I'm not always working on side projects but here are some public
+                repos of my work for you to see.
+            </p>
+        </div>
+    </main>
+</Layout>
+
