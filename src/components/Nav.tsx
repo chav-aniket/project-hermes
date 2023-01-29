@@ -4,7 +4,7 @@ import { FaSolidLocationDot } from "solid-icons/fa";
 import { IconPill } from "./components";
 
 const Nav = () => {
-  const styles = "px-3 py-0";
+  const styles = "pr-4 py-0";
   const size = 25;
   return (
     <nav class="flex flex-row items-center">
@@ -18,8 +18,8 @@ const Nav = () => {
           <SiLinkedin size={size} />
         </a>
       </span>
-      <span class="px-2">
-        <IconPill styles="rounded-full px-2 pt-1">
+      <span class={styles}>
+        <IconPill styles="rounded-full pr-1 pt-0.5">
           <FaSolidLocationDot
             class="inline m-1 p-2 align-middle"
             size={size + 15}

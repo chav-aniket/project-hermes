@@ -3,19 +3,29 @@ import { SiAtlassian } from "solid-icons/si";
 
 import Layout from "../layouts/Layout.astro";
 import { Age, IconPill, Nav } from "../components/components";
+import { calcSize } from "../utils/resizing";
+
+export const prerender = true;
 ---
 
 <Layout title="Homepage">
-  <main class="text-gray-200 m-20 md:m-60 lg:m-80 duration-300">
+  <main class="text-gray-300 m-5 md:m-[2.5rem] lg:m-52 duration-300">
     <Nav client:load />
     <div>
-      <h1 class="text-2xl my-10 md:text-3xl lg:text-4xl xl:text-5xl">
-        Hi 👋🏽 I'm Aniket,<br />
-        Software Engineer @<a href="https://www.atlassian.com"
-          ><IconPill client:load styles="inline mx-3 px-3 py-2 rounded-full">
-            <SiAtlassian class="inline ml-3 align-baseline" size={35} />
-            <span class="px-4">Atlassian</span>
-          </IconPill></a
+      <h1
+        class="text-2xl my-5 leading-normal md:text-3xl md:leading-normal lg:text-4xl lg:leading-normal xl:text-5xl xl:leading-normal"
+      >
+        Howdy 👋🏽 I'm Aniket,<br />
+        Software Engineer <span class="whitespace-nowrap"
+          >@<a href="https://www.atlassian.com"
+            ><IconPill client:load styles="inline mx-3 px-2 py-1 rounded-full">
+              <SiAtlassian
+                class="inline ml-3 align-baseline"
+                size={calcSize()}
+              />
+              <span class="px-4">Atlassian</span>
+            </IconPill></a
+          ></span
         >
       </h1>
 
