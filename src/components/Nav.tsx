@@ -21,7 +21,7 @@ const Nav = () => {
       <span class={styles}>
         <IconPill styles="rounded-full pr-1 pt-0.5">
           <FaSolidLocationDot
-            class="inline m-1 p-2 align-middle"
+            class="m-1 inline p-2 align-middle"
             size={size + 15}
           />
           <span class="pr-4">Sydney, Australia</span>

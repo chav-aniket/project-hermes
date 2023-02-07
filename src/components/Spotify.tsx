@@ -1,9 +1,5 @@
 const Spotify = () => {
-  return <div
-    class="p-5 bg-white bg-opacity-10"
-  >
-    Now Playing
-  </div>
+  return <div class="bg-white bg-opacity-10 p-5">Now Playing</div>;
 };
 
 export default Spotify;

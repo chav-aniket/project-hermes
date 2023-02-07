@@ -12,8 +12,8 @@ const Age = () => {
   return (
     <span
       class="
-        py-1 px-2 rounded-md bg-white
-        bg-opacity-10
+        rounded-md bg-white bg-opacity-10 py-1
+        px-2
     "
     >
       <code>~{age()}</code>

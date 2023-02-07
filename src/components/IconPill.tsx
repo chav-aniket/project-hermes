@@ -6,7 +6,7 @@ const IconPill: Component<{
 }> = (props) => {
   return (
     <div
-      class={`bg-white bg-opacity-20 w-fit whitespace-nowrap ${props.styles}`}
+      class={`w-fit whitespace-nowrap bg-white bg-opacity-20 ${props.styles}`}
     >
       {props.children}
     </div>
