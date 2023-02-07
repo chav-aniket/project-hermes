@@ -1,9 +1,7 @@
 ---
-import { SiAtlassian } from "solid-icons/si";
-
 import Layout from "../layouts/Layout.astro";
 import { Age, IconPill, Nav } from "../components/components";
-import { calcSize } from "../utils/resizing";
+import AtlassianIcon from "../components/AtlassianIcon.svelte";
 
 export const prerender = true;
 ---
@@ -19,10 +17,7 @@ export const prerender = true;
         Software Engineer <span class="whitespace-nowrap"
           >@<a href="https://www.atlassian.com"
             ><IconPill client:load styles="inline mx-3 px-2 py-1 rounded-full">
-              <SiAtlassian
-                class="inline ml-3 align-baseline"
-                size={calcSize()}
-              />
+              <AtlassianIcon client:load />
               <span class="px-4">Atlassian</span>
             </IconPill></a
           ></span

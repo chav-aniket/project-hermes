@@ -6,8 +6,11 @@ import tailwind from "@astrojs/tailwind";
 import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
+import svelte from "@astrojs/svelte";
+
+// https://astro.build/config
 export default defineConfig({
-  integrations: [solidJs(), tailwind()],
+  integrations: [solidJs(), tailwind(), svelte()],
   output: "server",
   adapter: vercel()
 });
