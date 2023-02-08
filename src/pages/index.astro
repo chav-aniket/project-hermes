@@ -1,14 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Age, IconPill, Nav } from "../components/components";
-import AtlassianIcon from "../components/AtlassianIcon.svelte";
+import Nav from "../components/astro/Nav.astro";
+import { Age, IconPill } from "../components/solidjs/solidComponents";
+import AtlassianIcon from "../components/svelte/AtlassianIcon.svelte";
 
 export const prerender = true;
 ---
 
 <Layout title="Homepage">
   <main class="m-5 text-gray-300 duration-300 md:m-[2.5rem] lg:m-52">
-    <Nav client:load />
+    <Nav />
     <div>
       <h1
         class="my-5 text-2xl leading-normal md:text-3xl md:leading-normal lg:text-4xl lg:leading-normal xl:text-5xl xl:leading-normal"
@@ -16,8 +17,13 @@ export const prerender = true;
         Howdy 👋🏽 I'm Aniket,<br />
         Software Engineer <span class="whitespace-nowrap"
           >@<a href="https://www.atlassian.com"
-            ><IconPill client:load styles="inline mx-3 px-2 py-1 rounded-full">
-              <AtlassianIcon client:load />
+            ><IconPill client:load class="inline mx-3 px-2 py-1 rounded-full">
+              <AtlassianIcon
+                client:load
+                base={20}
+                scale={5}
+                style="ml-3 inline align-baseline duration-300"
+              />
               <span class="px-4">Atlassian</span>
             </IconPill></a
           ></span

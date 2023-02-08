@@ -1,16 +1,16 @@
-const calcSize = () => {
+const calcSize = (base: number, scale: number) => {
   const x = typeof window === "undefined" ? 769 : window.innerWidth;
   switch (true) {
     // case x <= 640:
     //   return 20;
     case x <= 768:
-      return 20;
+      return base;
     case x > 769 && x <= 1024:
-      return 25;
+      return base + scale;
     case x > 1025 && x <= 1280:
-      return 30;
+      return base + scale * 2;
     default:
-      return 35;
+      return base + scale * 3;
   }
 };
 
