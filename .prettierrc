@@ -5,7 +5,13 @@
   "singleQuote": false,
   "arrowParens": "always",
   "semi": true,
-  "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
+  "singleAttributePerLine": true,
+  "plugins": [
+    "prettier-plugin-astro",
+    "prettier-plugin-svelte",
+    "prettier-plugin-tailwindcss"
+  ],
+  "pluginSearchDirs": false,
   "overrides": [
     {
       "files": "*.astro",

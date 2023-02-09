@@ -8,21 +8,21 @@ export const prerender = true;
 ---
 
 <Layout title="Homepage">
-  <main class="m-5 text-gray-300 duration-300 md:m-[2.5rem] lg:m-52">
+  <main class="m-5 text-gray-300 md:m-[2.5rem] lg:m-52">
     <Nav />
     <div>
       <h1
-        class="my-5 text-2xl leading-normal md:text-3xl md:leading-normal lg:text-4xl lg:leading-normal xl:text-5xl xl:leading-normal"
+        class="my-5 text-2xl leading-normal duration-200 md:text-3xl md:leading-normal lg:text-4xl lg:leading-normal xl:text-5xl xl:leading-normal"
       >
         Howdy 👋🏽 I'm Aniket,<br />
         Software Engineer <span class="whitespace-nowrap"
           >@<a href="https://www.atlassian.com"
-            ><IconPill client:load class="inline mx-3 px-2 py-1 rounded-full">
+            ><IconPill client:load class="inline mx-6 px-2 py-1 rounded-full">
               <AtlassianIcon
                 client:load
                 base={20}
                 scale={5}
-                style="ml-3 inline align-baseline duration-300"
+                style="ml-3 inline align-baseline"
               />
               <span class="px-4">Atlassian</span>
             </IconPill></a

@@ -11,24 +11,40 @@ const [base, scale] = [20, 3];
 
 <nav class="flex flex-row items-center">
   <span class={styles}>
-    <a target="_blank" href="https://www.github.com/chav-aniket">
-      <GithubIcon client:load base={base} scale={scale} />
+    <a
+      target="_blank"
+      href="https://www.github.com/chav-aniket"
+    >
+      <GithubIcon
+        client:load
+        base={base}
+        scale={scale}
+      />
     </a>
   </span>
   <span class={styles}>
-    <a target="_blank" href="https://www.linkedin.com/in/chavaniket/">
-      <LinkedInIcon client:load base={base} scale={scale} />
+    <a
+      target="_blank"
+      href="https://www.linkedin.com/in/chavaniket/"
+    >
+      <LinkedInIcon
+        client:load
+        base={base}
+        scale={scale}
+      />
     </a>
   </span>
   <span class={styles}>
     <IconPill class="rounded-full pr-1 pt-0.5 align-middle">
-      <LocationDotIcon
-        client:load
-        base={base + 15}
-        scale={scale}
-        style="m-1 inline p-2 align-middle"
-      />
-      <span class="pr-4">Sydney, Australia</span>
+      <div class="pl-2">
+        <LocationDotIcon
+          client:load
+          base={base + 20}
+          scale={scale}
+          style="inline py-2"
+        />
+        <span class="pr-4">Sydney, Australia</span>
+      </div>
     </IconPill>
   </span>
 </nav>

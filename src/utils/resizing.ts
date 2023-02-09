@@ -9,8 +9,10 @@ const calcSize = (base: number, scale: number) => {
       return base + scale;
     case x > 1025 && x <= 1280:
       return base + scale * 2;
-    default:
+    case x > 1281:
       return base + scale * 3;
+    default:
+      return 0;
   }
 };
 
