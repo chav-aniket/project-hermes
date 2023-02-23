@@ -1,9 +1,8 @@
 ---
-import GithubIcon from "../svelte/GithubIcon.svelte";
-import LinkedInIcon from "../svelte/LinkedInIcon.svelte";
-import LocationDotIcon from "../svelte/LocationDotIcon.svelte";
-
-import { IconPill } from "../solidjs/solidComponents";
+import { IconPill } from "@solidComponents/solidComponents";
+import GithubIcon from "@svelteComponents/GithubIcon.svelte";
+import LinkedInIcon from "@svelteComponents/LinkedInIcon.svelte";
+import LocationDotIcon from "@svelteComponents/LocationDotIcon.svelte";
 
 const styles = "pr-5 pb-0";
 const [base, scale] = [20, 3];
@@ -11,27 +10,13 @@ const [base, scale] = [20, 3];
 
 <nav class="flex flex-row items-center">
   <span class={styles}>
-    <a
-      target="_blank"
-      href="https://www.github.com/chav-aniket"
-    >
-      <GithubIcon
-        client:load
-        base={base}
-        scale={scale}
-      />
+    <a target="_blank" href="https://www.github.com/chav-aniket">
+      <GithubIcon client:load base={base} scale={scale} />
     </a>
   </span>
   <span class={styles}>
-    <a
-      target="_blank"
-      href="https://www.linkedin.com/in/chavaniket/"
-    >
-      <LinkedInIcon
-        client:load
-        base={base}
-        scale={scale}
-      />
+    <a target="_blank" href="https://www.linkedin.com/in/chavaniket/">
+      <LinkedInIcon client:load base={base} scale={scale} />
     </a>
   </span>
   <span class={styles}>

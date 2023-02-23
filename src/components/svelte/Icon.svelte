@@ -1,31 +1,36 @@
 <script lang="ts">
-  import { calcSize } from "../../utils/resizing";
-  import { IconVendor } from "../../utils/types";
-  export let base: number, scale: number, style: string, viewBox: IconVendor = IconVendor.SimpleIcon, fill: string = "#ffffff";
+  import { calcSize } from "@utils/resizing";
+  import { IconVendor } from "@utils/types";
+
+  export let base: number,
+    scale: number,
+    style: string,
+    viewBox: IconVendor = IconVendor.SimpleIcon,
+    fill: string = "#ffffff";
   let size = calcSize(base, scale);
-  const handleResize = () => size = calcSize(base, scale);
-  
-  let viewBoxValue = ""
+  const handleResize = () => (size = calcSize(base, scale));
+
+  let viewBoxValue = "";
   switch (viewBox) {
     case IconVendor.SimpleIcon:
-      viewBoxValue = "0 0 24 24"
+      viewBoxValue = "0 0 24 24";
       break;
     case IconVendor.FontAwesome:
-      viewBoxValue = "0 0 390 512"
+      viewBoxValue = "0 0 390 512";
     default:
       break;
   }
 </script>
 
 <svelte:window on:resize={() => handleResize()} />
-  <svg
+<svg
   role="img"
   viewBox={viewBoxValue}
   xmlns="http://www.w3.org/2000/svg"
   class={`duration-300 ${style}`}
   width={size}
   height={size}
-  fill={fill}
+  {fill}
 >
   <slot />
 </svg>

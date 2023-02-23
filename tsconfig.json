@@ -3,9 +3,35 @@
   "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
+    "baseUrl": "src",
+    "paths": {
+      "@solidComponents/*": [
+        "components/solidjs/*"
+      ],
+      "@astroComponents/*": [
+        "components/astro/*"
+      ],
+      "@svelteComponents/*": [
+        "components/svelte/*"
+      ],
+      "@layouts/*": [
+        "layouts/*"
+      ],
+      "@pages/*": [
+        "pages/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ]
+    },
     "types": [
       "node",
-      "svelte"
+      "svelte",
+      "vite-plugin-pwa/client",
+      "vite-plugin-pwa/info"
     ]
-  }
+  },
+  "include": [
+    "src"
+  ]
 }

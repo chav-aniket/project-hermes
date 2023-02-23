@@ -9,5 +9,9 @@
   },
   "[astro]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
