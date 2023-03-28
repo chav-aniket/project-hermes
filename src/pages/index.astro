@@ -2,12 +2,15 @@
 import Layout from "@layouts/Layout.astro";
 
 import Nav from "@astroComponents/Nav.astro";
+import Repo from "@astroComponents/Repo.astro";
+
 import { Age, IconPill } from "@solidComponents/solidComponents";
 import AtlassianIcon from "@svelteComponents/AtlassianIcon.svelte";
 
-export const prerender = true;
----
+import { fetchRepos } from "@utils/github";
 
+const repoData = await fetchRepos();
+---
 <Layout title="Homepage">
   <main class="m-5 text-gray-300 md:m-[2.5rem] lg:m-52">
     <Nav />
@@ -36,14 +39,16 @@ export const prerender = true;
         applications, writing clean code and ensuring top of the line DevEx.
       </p>
     </div>
-    <!-- <div>
+    <div>
       <h2 class="text-xl my-10 md:text-2xl lg:text-3xl xl:text-4xl">
         What am I working on?
       </h2>
       <p>
-        I'm not always working on side projects but here are some public repos
-        of my work for you to see.
+        Who knows what I'm doing right now, but here's some stuff I've created.
       </p>
-    </div> -->
-  </main>
+    </div>
+    <div class="flex flex-row">
+        {repoData.map(r => <Repo repo={r} />)}
+    </div>
+ </main>
 </Layout>

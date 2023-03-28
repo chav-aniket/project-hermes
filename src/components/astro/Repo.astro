@@ -1,0 +1,18 @@
+---
+import type { Repo } from "@utils/github";
+
+export interface Props {
+    repo: Repo
+}
+
+const { name, description, language, stargazers, link } = Astro.props.repo;
+---
+<div class="relative border-white border-4 rounded-lg my-4 mr-5 p-4 max-w-sm">
+    <div class="text-xl font-bold">{name}</div>
+    <div class="pb-7">{description}</div>
+    <div class="flex flex-row absolute bottom-2">
+        <div class="relative right-2">{language} | {stargazers} ⭐</div>
+        <div class="relative left-2"><a href={link}>link</a></div>
+    </div>
+</div>
+
