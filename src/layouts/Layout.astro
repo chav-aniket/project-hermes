@@ -53,6 +53,10 @@ const { title } = Astro.props;
     text-decoration: none;
   }
 
+    a:focus, input:focus {
+        outline: none;
+    }
+
   html.dark {
     @apply bg-primary-dark;
   }
