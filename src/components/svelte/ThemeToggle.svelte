@@ -1,7 +1,5 @@
 <script>
-  import { isDarkTheme, toggleTheme } from "@utils/theme";
-  let isDark = isDarkTheme();
-  if (isDark) document.documentElement.classList.remove("dark"); 
+  import { toggleTheme } from "@utils/theme";
 </script>
 
 <label
@@ -13,7 +11,6 @@
   <input
     type="checkbox"
     class="peer h-0 w-0 opacity-0"
-    bind:checked={isDark}
     on:change={toggleTheme}
   />
   <!-- prettier-ignore -->
