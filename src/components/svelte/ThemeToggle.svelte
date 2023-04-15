@@ -1,6 +1,7 @@
 <script>
   import { isDarkTheme, toggleTheme } from "@utils/theme";
   let isDark = isDarkTheme();
+  if (isDark) document.documentElement.classList.remove("dark"); 
 </script>
 
 <label
