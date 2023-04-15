@@ -7,6 +7,7 @@
     class="
         switch
         relative inline-block w-9 sm:w-20 h-9
+        focus:outline-none
         "
     >
     <input
