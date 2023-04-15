@@ -1,5 +1,6 @@
 ---
 import type { Repo } from "@utils/github";
+import StarIcon from "@svelteComponents/StarIcon.svelte";
 
 export interface Props {
     repo: Repo
@@ -7,12 +8,29 @@ export interface Props {
 
 const { name, description, language, stargazers, link } = Astro.props.repo;
 ---
-<div class="relative border-white border-4 rounded-lg my-4 mr-5 p-4 max-w-sm">
-    <div class="text-xl font-bold">{name}</div>
+<div class="
+    relative group/repo
+    border-secondary-light dark:border-orange-100 border-8 rounded-md
+    my-4 p-6 w-1/3
+    duration-300 hover:bg-orange-600 hover:text-orange-100 hover:my-2
+    "
+>
+    <a href={link} target="_blank" >
+    <div class="text-xl font-bold pb-1">{name}</div>
     <div class="pb-7">{description}</div>
-    <div class="flex flex-row absolute bottom-2">
-        <div class="relative right-2">{language} | {stargazers} ⭐</div>
-        <div class="relative left-2"><a href={link}>link</a></div>
+    <div class="flex flex-row w-5/6">
+        <div
+            class="absolute bottom-4 text-xs group-hover/repo:fill-orange-200"
+        >
+            {language} | {stargazers}
+            <StarIcon
+                client:only 
+                base={5}
+                scale={5} 
+                style="inline-block"
+            />
+        </div>
     </div>
+    </a>
 </div>
 

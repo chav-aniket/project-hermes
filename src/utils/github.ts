@@ -25,7 +25,7 @@ export const fetchRepos = async (): Promise<Repo[]> => {
     const repos = pinned.map(p => ({
         name: p.name,
         description: p.description ?? "",
-        language: p.language ?? "",
+        language: p.language ?? "NoLang",
         stargazers: p.stargazers_count,
         link: p.html_url
     }));
