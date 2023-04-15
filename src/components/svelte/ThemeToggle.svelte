@@ -6,7 +6,7 @@
 <label
     class="
         switch
-        relative inline-block w-20 h-9
+        relative inline-block w-9 sm:w-20 h-9
         "
     >
     <input
@@ -24,7 +24,7 @@
             before:absolute before:w-7 before:h-7
             before:left-1 before:bottom-1 before:top-1
             rounded-full before:rounded-full
-            peer-checked:bg-gray-700 peer-checked:before:translate-x-[2.6rem]
+            peer-checked:bg-gray-700 sm:peer-checked:before:translate-x-[2.6rem]
             peer-checked:before:bg-gray-700
             outline outline-2 outline-offset-2 
             outline-secondary-light dark:outline-secondary-dark
