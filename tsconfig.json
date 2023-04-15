@@ -1,21 +1,23 @@
 {
-  "include": ["./src/**/*"],
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "lib": ["dom", "es2017"],
-    // "allowJs": true,
-    // "checkJs": true,
-    "jsx": "react",
-    "strict": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "moduleResolution": "node",
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "baseUrl": "src",
+    "paths": {
+      "@solidComponents/*": ["components/solidjs/*"],
+      "@astroComponents/*": ["components/astro/*"],
+      "@svelteComponents/*": ["components/svelte/*"],
+      "@layouts/*": ["layouts/*"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"]
+    },
+    "types": [
+      "node",
+      "svelte",
+      "vite-plugin-pwa/client",
+      "vite-plugin-pwa/info"
+    ]
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src"]
 }

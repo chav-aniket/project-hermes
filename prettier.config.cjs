@@ -1,0 +1,20 @@
+module.exports = {
+  printWidth: 80,
+  tabWidth: 2,
+  useTabs: false,
+  semiColons: true,
+  singleQuote: true,
+  trailingComma: "es5",
+  bracketSameLine: false,
+  arrowParens: "always",
+  singleAttributePerLine: false,
+  astroAllowShorthand: true,
+  importOrderSeparation: true,
+  importORderSortSpecifiers: true,
+  pluginSearchDirs: false,
+  plugins: [
+    require("prettier-plugin-svelte"),
+    require("@trivago/prettier-plugin-sort-imports"),
+    require("prettier-plugin-tailwindcss"),
+  ],
+};
