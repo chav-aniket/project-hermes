@@ -3,7 +3,6 @@ import Layout from "@layouts/Layout.astro";
 
 import Nav from "@astroComponents/Nav.astro";
 import Repo from "@astroComponents/Repo.astro";
-
 import { Age, IconPill } from "@solidComponents/solidComponents";
 import AtlassianIcon from "@svelteComponents/AtlassianIcon.svelte";
 
@@ -11,62 +10,58 @@ import { fetchRepos } from "@utils/github";
 
 const repoData = await fetchRepos();
 ---
-<Layout title="Homepage">
-    <main 
-        class="
-            object-center m-5 sm:m-12 md:m-11 lg:m-32
-            text-textLight dark:text-textDark 
-        "
-    >
-        <div class="2xl:flex 2x:flex-row">
-            <div class="flex flex-col">
-                <Nav />
-                <div>
-                    <h1
-                        class="
-                            mt-5 mb-5 sm:mb-10 font-bold
-                            text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl
-                            leading-relaxed lg:leading-normal xl:leading-normal
-                        "
-                    >
-                        Howdy 👋🏽 I'm Aniket,<br />
-                        Software Engineer <span class="whitespace-nowrap"
-                        >@<a href="https://www.atlassian.com"
-                            ><IconPill client:load class="inline ml-2 md:ml-6 px-2 py-1 rounded-full">
-                            <AtlassianIcon
-                                client:only
-                                base={15}
-                                scale={3}
-                                style="inline align-baseline"
-                            />
-                            <span class="pr-2 sm:pr-4">Atlassian</span>
-                            </IconPill></a
-                        ></span>
-                    </h1>
 
-                    <p class="text-sm sm:text-xl">
-                        I'm a <Age client:idle /> year old developer who enjoys working on full-stack
-                        applications, writing clean code and ensuring top of the line DevEx.
-                    </p>
-                </div>
-                <div>
-                    <h2
-                        class="
-                            my-5 sm:my-10 font-bold text-md sm:text-xl 
-                            md:text-2xl lg:text-3xl xl:text-4xl
-                        "
-                    >
-                        What am I working on?
-                    </h2>
-                    <p class="my-2 sm:my-4 text-sm sm:text-xl">
-                        Who knows what I'm doing right now, but here's some stuff I've created.
-                    </p>
-                    <div class="flex flex-col lg:flex-row sm:gap-1 lg:gap-5">
-                        {repoData.map(r => <Repo repo={r} />)}
-                    </div>
-                </div>
-            </div>
-            <div class="hidden 2xl:block" style="flex-basis: calc(100% / 2);"></div>
+<Layout title="Homepage">
+  <main
+    class="m-5 object-center text-textLight dark:text-textDark sm:m-12 md:m-11 lg:m-32"
+  >
+    <div class="2x:flex-row 2xl:flex">
+      <div class="flex flex-col">
+        <Nav />
+        <div>
+          <h1
+            class="mb-5 mt-5 text-lg font-bold leading-relaxed sm:mb-10 sm:text-2xl md:text-3xl lg:text-4xl lg:leading-normal xl:text-5xl xl:leading-normal"
+          >
+            Howdy 👋🏽 I'm Aniket,<br />
+            Software Engineer <span class="whitespace-nowrap"
+              >@<a href="https://www.atlassian.com"
+                ><IconPill
+                  client:load
+                  class="ml-2 inline rounded-full px-2 py-1 md:ml-6"
+                >
+                  <AtlassianIcon
+                    client:only
+                    base={15}
+                    scale={3}
+                    style="inline align-baseline"
+                  />
+                  <span class="pr-2 sm:pr-4">Atlassian</span>
+                </IconPill></a
+              ></span
+            >
+          </h1>
+
+          <p class="text-sm sm:text-xl">
+            I'm a <Age client:idle /> year old developer who enjoys working on full-stack
+            applications, writing clean code and ensuring top of the line DevEx.
+          </p>
         </div>
-    </main>
+        <div>
+          <h2
+            class="text-md my-5 font-bold sm:my-10 sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
+          >
+            What am I working on?
+          </h2>
+          <p class="my-2 text-sm sm:my-4 sm:text-xl">
+            Who knows what I'm doing right now, but here's some stuff I've
+            created.
+          </p>
+          <div class="flex flex-col sm:gap-1 lg:flex-row lg:gap-5">
+            {repoData.map((r) => <Repo repo={r} />)}
+          </div>
+        </div>
+      </div>
+      <div class="hidden 2xl:block" style="flex-basis: calc(100% / 2);"></div>
+    </div>
+  </main>
 </Layout>

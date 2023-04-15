@@ -20,8 +20,8 @@
       break;
     case IconVendor.CustomView:
     default:
-        viewBoxValue = customViewBox;
-        break;
+      viewBoxValue = customViewBox;
+      break;
   }
 </script>
 
@@ -30,7 +30,7 @@
   role="img"
   viewBox={viewBoxValue}
   xmlns="http://www.w3.org/2000/svg"
-  class={`duration-500 fill-tertiary-light dark:fill-tertiary-dark ${style}`}
+  class={`fill-tertiary-light dark:fill-tertiary-dark ${style}`}
   width={size}
   height={size}
 >

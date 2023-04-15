@@ -5,24 +5,12 @@
     "jsxImportSource": "solid-js",
     "baseUrl": "src",
     "paths": {
-      "@solidComponents/*": [
-        "components/solidjs/*"
-      ],
-      "@astroComponents/*": [
-        "components/astro/*"
-      ],
-      "@svelteComponents/*": [
-        "components/svelte/*"
-      ],
-      "@layouts/*": [
-        "layouts/*"
-      ],
-      "@pages/*": [
-        "pages/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ]
+      "@solidComponents/*": ["components/solidjs/*"],
+      "@astroComponents/*": ["components/astro/*"],
+      "@svelteComponents/*": ["components/svelte/*"],
+      "@layouts/*": ["layouts/*"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"]
     },
     "types": [
       "node",
@@ -31,7 +19,5 @@
       "vite-plugin-pwa/info"
     ]
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

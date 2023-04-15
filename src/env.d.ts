@@ -3,10 +3,9 @@
 /// <reference types="vite-plugin-pwa/info" />
 
 interface ImportMetaEnv {
-    readonly GH_TOKEN: string;
+  readonly GH_TOKEN: string;
 }
 
 interface ImportMeta {
-    readonly env: ImportMetaEnv;
+  readonly env: ImportMetaEnv;
 }
-

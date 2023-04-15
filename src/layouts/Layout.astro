@@ -1,6 +1,8 @@
 ---
 import { pwaInfo } from "virtual:pwa-info";
+
 import ReloadPrompt from "@astroComponents/ReloadPrompt.astro";
+
 import { setTheme } from "@utils/theme";
 
 export interface Props {
@@ -25,13 +27,13 @@ const { title } = Astro.props;
 
     <script src="../pwa.ts"></script>
     <script is:inline>
-        setTheme();
+      setTheme();
     </script>
     {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
   </head>
   <body>
     <main>
-        <slot />
+      <slot />
     </main>
     <ReloadPrompt />
   </body>
@@ -53,9 +55,10 @@ const { title } = Astro.props;
     text-decoration: none;
   }
 
-    a:focus, input:focus {
-        outline: none;
-    }
+  a:focus,
+  input:focus {
+    outline: none;
+  }
 
   html.dark {
     @apply bg-primary-dark;
