@@ -5,7 +5,8 @@
   export let base: number,
     scale: number,
     style: string,
-    viewBox: IconVendor = IconVendor.SimpleIcon;
+    viewBox: IconVendor = IconVendor.SimpleIcon,
+    customViewBox: string = "";
   let size = calcSize(base, scale);
   const handleResize = () => (size = calcSize(base, scale));
 
@@ -16,8 +17,11 @@
       break;
     case IconVendor.FontAwesome:
       viewBoxValue = "0 0 390 512";
-    default:
       break;
+    case IconVendor.CustomView:
+    default:
+        viewBoxValue = customViewBox;
+        break;
   }
 </script>
 

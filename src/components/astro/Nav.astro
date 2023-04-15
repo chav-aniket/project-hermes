@@ -4,7 +4,6 @@ import GithubIcon from "@svelteComponents/GithubIcon.svelte";
 import LinkedInIcon from "@svelteComponents/LinkedInIcon.svelte";
 import LocationDotIcon from "@svelteComponents/LocationDotIcon.svelte";
 import ThemeToggle from "@svelteComponents/ThemeToggle.svelte";
-import { isDarkTheme } from "@utils/theme";
 
 const styles = "pb-0";
 const [base, scale] = [20, 3];
@@ -14,19 +13,19 @@ const [base, scale] = [20, 3];
   <ThemeToggle client:only />
   <span class={styles}>
     <a target="_blank" href="https://www.github.com/chav-aniket">
-      <GithubIcon client:only base={base} scale={scale} />
+      <GithubIcon client:load base={base} scale={scale} />
     </a>
   </span>
   <span class={styles}>
     <a target="_blank" href="https://www.linkedin.com/in/chavaniket/">
-      <LinkedInIcon client:only base={base} scale={scale} />
+      <LinkedInIcon client:load base={base} scale={scale} />
     </a>
   </span>
   <span class={styles}>
     <IconPill class="rounded-full pr-1 pt-0.5 align-middle">
       <div class="pl-2">
         <LocationDotIcon
-          client:only
+          client:load
           base={base + 20}
           scale={scale}
           style="inline py-2"
