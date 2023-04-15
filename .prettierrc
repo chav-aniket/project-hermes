@@ -1,4 +1,32 @@
 {
-  "arrowParens": "avoid",
-  "semi": false
+  "tabWidth": 2,
+  "useTabs": false,
+  "endOfLine": "lf",
+  "singleQuote": false,
+  "arrowParens": "always",
+  "semi": true,
+  "singleAttributePerLine": false,
+  "importOrder": [
+    "<THIRD_PARTY_MODULES>",
+    "^@layouts/(.*)$",
+    "^@pages/(.*)$",
+    "^@[a-z]*Components/(.*)$",
+    "^@utils/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "plugins": [
+    "prettier-plugin-astro",
+    "prettier-plugin-svelte",
+    "prettier-plugin-tailwindcss",
+    "@trivago/prettier-plugin-sort-imports"
+  ],
+  "pluginSearchDirs": false,
+  "overrides": [
+    {
+      "files": "*.astro",
+      "options": { "parser": "astro" }
+    }
+  ]
 }

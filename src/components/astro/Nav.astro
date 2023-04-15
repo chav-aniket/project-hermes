@@ -1,0 +1,41 @@
+---
+import { IconPill } from "@solidComponents/solidComponents";
+import GithubIcon from "@svelteComponents/GithubIcon.svelte";
+import LinkedInIcon from "@svelteComponents/LinkedInIcon.svelte";
+import LocationDotIcon from "@svelteComponents/LocationDotIcon.svelte";
+import ThemeToggle from "@svelteComponents/ThemeToggle.svelte";
+
+const styles = "pb-0";
+const [base, scale] = [20, 3];
+const sydLink =
+  "https://www.google.com/maps/place/Sydney+NSW+2000/@-33.8678843,151.2048366,16z/data=!3m1!4b1!4m6!3m5!1s0x6b12ae401e8b983f:0x5017d681632ccc0!8m2!3d-33.8690742!4d151.2096944!16s%2Fg%2F12h2qw330";
+---
+
+<nav class="flex flex-row items-center gap-5">
+  <ThemeToggle client:only />
+  <span class={styles}>
+    <a target="_blank" href="https://www.github.com/chav-aniket">
+      <GithubIcon client:load base={base} scale={scale} />
+    </a>
+  </span>
+  <span class={styles}>
+    <a target="_blank" href="https://www.linkedin.com/in/chavaniket/">
+      <LinkedInIcon client:load base={base} scale={scale} />
+    </a>
+  </span>
+  <a target="_blank" href={sydLink} class={styles}>
+    <IconPill
+      class="md:text-md rounded-full pt-0.5 align-middle text-sm xl:text-lg"
+    >
+      <div class="pl-2">
+        <LocationDotIcon
+          client:load
+          base={base + 20}
+          scale={scale}
+          style="inline py-2"
+        />
+        <span class="pr-4 md:pr-6">Sydney, Australia</span>
+      </div>
+    </IconPill>
+  </a>
+</nav>
