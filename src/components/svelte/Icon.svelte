@@ -5,8 +5,7 @@
   export let base: number,
     scale: number,
     style: string,
-    viewBox: IconVendor = IconVendor.SimpleIcon,
-    fill: string = "#ffffff";
+    viewBox: IconVendor = IconVendor.SimpleIcon;
   let size = calcSize(base, scale);
   const handleResize = () => (size = calcSize(base, scale));
 
@@ -27,10 +26,9 @@
   role="img"
   viewBox={viewBoxValue}
   xmlns="http://www.w3.org/2000/svg"
-  class={`duration-300 ${style}`}
+  class={`duration-500 fill-tertiary-light dark:fill-tertiary-dark ${style}`}
   width={size}
   height={size}
-  {fill}
 >
   <slot />
 </svg>
