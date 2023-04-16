@@ -26,11 +26,11 @@ export const setDark = () => {
 
 export const toggleTheme = () => {
   const theme = localStorage.theme;
-  if (theme === "light") {
-    setDark();
+  if (theme === "dark") {
+    setLight();
     setTheme();
   } else {
-    setLight();
+    setDark();
     setTheme();
   }
 };
