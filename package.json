@@ -20,6 +20,7 @@
     "@fontsource/jetbrains-mono": "^4.5.12",
     "@octokit/core": "^4.2.0",
     "@octokit/plugin-rest-endpoint-methods": "^7.0.1",
+    "@vercel/analytics": "^1.0.0",
     "@vite-pwa/astro": "^0.0.5",
     "astro": "^2.3.0",
     "dayjs": "^1.11.7",
