@@ -1,9 +1,12 @@
 ---
 import { pwaInfo } from "virtual:pwa-info";
+import { inject } from "@vercel/analytics";
 
 import ReloadPrompt from "@astroComponents/ReloadPrompt.astro";
 
 import { setTheme } from "@utils/theme";
+
+inject({ mode: import.meta.env.MODE });
 
 export interface Props {
   title: string;
