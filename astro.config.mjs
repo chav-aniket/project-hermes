@@ -13,7 +13,7 @@ export default defineConfig({
     tailwind(),
     svelte(),
     AstroPWA({
-      mode: "development",
+      mode: import.meta.env.MODE,
       base: "/",
       scope: "/",
       includeAssets: ["favicon.svg"],
