@@ -2176,6 +2176,7 @@ packages:
       react: 18.2.0
     dev: false
 
+<<<<<<< HEAD
   /@vercel/analytics@1.0.0(react@18.2.0):
     resolution: {integrity: sha512-RQmj7pv82JwGDHrnKeRc6TtSw2U7rWNubc2IH0ernTzWTj02yr9zvIYiYJeztsBzrJtWv7m8Nz6vxxb+cdEtJw==}
     peerDependencies:
@@ -2184,6 +2185,8 @@ packages:
       react: 18.2.0
     dev: false
 
+=======
+>>>>>>> b71810ae210551c7e0547a587747d544a92772b9
   /@vercel/nft@0.22.6:
     resolution: {integrity: sha512-gTsFnnT4mGxodr4AUlW3/urY+8JKKB452LwF3m477RFUJTAaDmcz2JqFuInzvdybYIeyIv1sSONEJxsxnbQ5JQ==}
     engines: {node: '>=14'}
