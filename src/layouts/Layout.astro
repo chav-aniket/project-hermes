@@ -6,8 +6,6 @@ import ReloadPrompt from "@astroComponents/ReloadPrompt.astro";
 
 import { setTheme } from "@utils/theme";
 
-inject({ mode: import.meta.env.MODE });
-
 export interface Props {
   title: string;
 }
@@ -31,6 +29,7 @@ const { title } = Astro.props;
     <script src="../pwa.ts"></script>
     <script is:inline>
       setTheme();
+      inject({ mode: import.meta.env.MODE });
     </script>
     {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
   </head>
