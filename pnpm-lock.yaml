@@ -17,8 +17,8 @@ dependencies:
     specifier: ^7.21.8
     version: 7.21.8
   '@fontsource/jetbrains-mono':
-    specifier: ^4.5.12
-    version: 4.5.12
+    specifier: ^5.0.3
+    version: 5.0.3
   '@octokit/core':
     specifier: ^4.2.1
     version: 4.2.1
@@ -1665,8 +1665,8 @@ packages:
     dev: false
     optional: true
 
-  /@fontsource/jetbrains-mono@4.5.12:
-    resolution: {integrity: sha512-LJF1ala1/u+wXZmESFqIk08FA9yGX4/uAAleCHmXUMgEjvNAYFHUQQ7eK5hQQoBOwh99cU5suTrqYqEkgzwzPA==}
+  /@fontsource/jetbrains-mono@5.0.3:
+    resolution: {integrity: sha512-0zbVAm0dVaBo7x9Q4ceX4VWe5VSM1Jaonb85bC+LR7fTpPeOpQs1nPDSdR55XMGSghl7ElsL12g8AaJKwXoutw==}
     dev: false
 
   /@jridgewell/gen-mapping@0.3.3:
