@@ -13,7 +13,7 @@ export default defineConfig({
     tailwind(),
     svelte(),
     AstroPWA({
-      mode: "development",
+      mode: import.meta.env.MODE,
       base: "/",
       scope: "/",
       includeAssets: ["favicon.svg"],
@@ -52,5 +52,9 @@ export default defineConfig({
     }),
   ],
   output: "server",
-  adapter: vercel(),
+  adapter: vercel(
+    {
+      analytics: true,
+    }
+  ),
 });
