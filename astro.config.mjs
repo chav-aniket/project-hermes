@@ -55,6 +55,7 @@ export default defineConfig({
   adapter: vercel(
     {
       analytics: true,
+      functionPerRoute: false
     }
   ),
 });
