@@ -15,7 +15,7 @@
     "@astrojs/solid-js": "^3.0.1",
     "@astrojs/svelte": "^4.0.2",
     "@astrojs/tailwind": "5.0.0",
-    "@astrojs/vercel": "^4.0.5",
+    "@astrojs/vercel": "^5.0.1",
     "@babel/core": "^7.22.17",
     "@fontsource/jetbrains-mono": "^5.0.12",
     "@octokit/core": "^5.0.0",
