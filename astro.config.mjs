@@ -5,9 +5,20 @@ import vercel from "@astrojs/vercel/serverless";
 // https://astro.build/config
 import AstroPWA from "@vite-pwa/astro";
 import { defineConfig } from "astro/config";
+import biomePlugin from "vite-plugin-biome";
+import oxlintPlugin from "vite-plugin-oxlint";
 
 // https://astro.build/config
 export default defineConfig({
+  vite: {
+    plugins: [
+      biomePlugin({
+        mode: "check",
+        files: ".",
+      }),
+      oxlintPlugin(),
+    ],
+  },
   integrations: [
     solidJs(),
     tailwind(),
@@ -52,9 +63,7 @@ export default defineConfig({
     }),
   ],
   output: "server",
-  adapter: vercel(
-    {
-      analytics: true,
-    }
-  ),
+  adapter: vercel({
+    analytics: true,
+  }),
 });
