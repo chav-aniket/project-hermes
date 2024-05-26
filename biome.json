@@ -8,7 +8,7 @@
     "lineEnding": "lf",
     "lineWidth": 80,
     "attributePosition": "auto",
-    "ignore": ["dev-dist"]
+    "ignore": ["dev-dist", "*.svelte"]
   },
   "organizeImports": { "enabled": false },
   "linter": {
@@ -19,7 +19,7 @@
         "noExplicitAny": "warn"
       },
       "style": {
-        "useConst": "warn",
+        "useConst": "off",
         "noNonNullAssertion": "warn"
       },
       "nursery": { "useSortedClasses": "error" }

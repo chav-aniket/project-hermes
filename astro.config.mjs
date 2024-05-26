@@ -15,7 +15,6 @@ export default defineConfig({
       biomePlugin({
         mode: "check",
         files: ".",
-        applyFixes: true,
       }),
       oxlintPlugin(),
     ],

@@ -1,29 +1,29 @@
 <script lang="ts">
-import { calcSize } from "@utils/resizing";
-import { IconVendor } from "@utils/types";
+  import { calcSize } from "@utils/resizing";
+  import { IconVendor } from "@utils/types";
 
-export let base: number,
-  scale: number,
-  style: string,
-  viewBox: IconVendor = IconVendor.SimpleIcon,
-  customViewBox = "";
-let size = calcSize(base, scale);
-const handleResize = () => {
-  size = calcSize(base, scale);
-};
+  export let base: number,
+    scale: number,
+    style: string,
+    viewBox: IconVendor = IconVendor.SimpleIcon,
+    customViewBox = "";
+  let size = calcSize(base, scale);
+  const handleResize = () => {
+    size = calcSize(base, scale);
+  };
 
-let viewBoxValue = "";
-switch (viewBox) {
-  case IconVendor.SimpleIcon:
-    viewBoxValue = "0 0 24 24";
-    break;
-  case IconVendor.FontAwesome:
-    viewBoxValue = "0 0 390 512";
-    break;
-  default:
-    viewBoxValue = customViewBox;
-    break;
-}
+  let viewBoxValue = "";
+  switch (viewBox) {
+    case IconVendor.SimpleIcon:
+      viewBoxValue = "0 0 24 24";
+      break;
+    case IconVendor.FontAwesome:
+      viewBoxValue = "0 0 390 512";
+      break;
+    default:
+      viewBoxValue = customViewBox;
+      break;
+  }
 </script>
 
 <svelte:window on:resize={() => handleResize()} />
