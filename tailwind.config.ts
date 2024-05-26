@@ -1,9 +1,7 @@
-/** @type {import('tailwindcss').Config} */
+import type { Config } from "tailwindcss";
+import colours from "tailwindcss/colors";
 
-// import { Config } from "tailwindcss";
-const colours = require("tailwindcss/colors");
-
-module.exports = {
+export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
     colors: {
@@ -33,4 +31,4 @@ module.exports = {
   },
   plugins: [],
   darkMode: "class",
-};
+} satisfies Config;
