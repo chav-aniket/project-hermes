@@ -12,12 +12,7 @@
       "@pages/*": ["pages/*"],
       "@utils/*": ["utils/*"]
     },
-    "types": [
-      "node",
-      "svelte",
-      "vite-plugin-pwa/client",
-      "vite-plugin-pwa/info"
-    ]
+    "types": ["svelte", "vite-plugin-pwa/client", "vite-plugin-pwa/info"]
   },
   "include": ["src"]
 }

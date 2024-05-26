@@ -1,12 +1,12 @@
 <script>
-  import { isDarkTheme, toggleTheme } from "@utils/theme";
-  if (isDarkTheme()) {
-    localStorage.setItem('theme', 'dark');
-    document.documentElement.classList.add('dark');
-  } else {
-    localStorage.setItem('theme', 'light');
-  }
-  let isDark = isDarkTheme();
+import { isDarkTheme, toggleTheme } from "@utils/theme";
+if (isDarkTheme()) {
+  localStorage.setItem("theme", "dark");
+  document.documentElement.classList.add("dark");
+} else {
+  localStorage.setItem("theme", "light");
+}
+const isDark = isDarkTheme();
 </script>
 
 <label

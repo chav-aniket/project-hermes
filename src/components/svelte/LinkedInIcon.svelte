@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Icon from "@svelteComponents/Icon.svelte";
+import Icon from "@svelteComponents/Icon.svelte";
 
-  import { IconVendor } from "@utils/types";
+import { IconVendor } from "@utils/types";
 
-  export let base: number, scale: number, style: string;
+export let base: number, scale: number, style: string;
 </script>
 
 <Icon {base} {scale} {style} viewBox={IconVendor.SimpleIcon}>

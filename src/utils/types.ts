@@ -1,5 +1,5 @@
 export enum IconVendor {
-  SimpleIcon,
-  FontAwesome,
-  CustomView,
+  SimpleIcon = 0,
+  FontAwesome = 1,
+  CustomView = 2,
 }

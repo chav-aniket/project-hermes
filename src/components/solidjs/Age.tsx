@@ -11,12 +11,7 @@ const Age = () => {
   setInterval(() => setAge(+calcAge()), 1000);
 
   return (
-    <span
-      class="
-                rounded-md py-1 px-2
-                bg-secondary-light dark:bg-secondary-dark
-            "
-    >
+    <span class="rounded-md bg-secondary-light px-2 py-1 dark:bg-secondary-dark">
       <code>~{age()}</code>
     </span>
   );
