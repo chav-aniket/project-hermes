@@ -9,7 +9,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier --write --plugin-search-dir=. ."
+    "format": "bun format:biome && bun format:oxc",
+    "format:biome": "bun biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files}",
+    "format:oxc": "bun oxlint --fix --tsconfig ./tsconfig.json --import-plugin"
   },
   "dependencies": {
     "@astrojs/solid-js": "^4.2.0",
@@ -39,8 +41,5 @@
     "tsconfig-paths": "^4.2.0",
     "vite-plugin-biome": "^1.0.9",
     "vite-plugin-oxlint": "^1.0.2"
-  },
-  "volta": {
-    "node": "20.6.1"
   }
 }
