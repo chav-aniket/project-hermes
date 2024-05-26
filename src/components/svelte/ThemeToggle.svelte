@@ -1,12 +1,12 @@
 <script>
-import { isDarkTheme, toggleTheme } from "@utils/theme";
-if (isDarkTheme()) {
-  localStorage.setItem("theme", "dark");
-  document.documentElement.classList.add("dark");
-} else {
-  localStorage.setItem("theme", "light");
-}
-const isDark = isDarkTheme();
+  import { isDarkTheme, toggleTheme } from "@utils/theme";
+  if (isDarkTheme()) {
+    localStorage.setItem("theme", "dark");
+    document.documentElement.classList.add("dark");
+  } else {
+    localStorage.setItem("theme", "light");
+  }
+  const isDark = isDarkTheme();
 </script>
 
 <label
@@ -49,6 +49,8 @@ const isDark = isDarkTheme();
   input:checked + .slider:before {
     /* TODO: Need to find out why @apply doesn't work here */
     background: #475569;
-    box-shadow: inset -3px -2px 5px -2px #8983f7, inset -10px -4px 0 0 #a3dafb;
+    box-shadow:
+      inset -3px -2px 5px -2px #8983f7,
+      inset -10px -4px 0 0 #a3dafb;
   }
 </style>
