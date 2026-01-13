@@ -8,7 +8,7 @@ pre-commit:
   commands:
     biome:
       glob: "*.{js,ts,jsx,tsx,astro,svelte}"
-      run: bun biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files} && git update-index --again
+      run: ~/.bun/bin/bun biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files} && git update-index --again
     oxc:
       glob: "*.{js,ts,jsx,tsx,astro,svelte}"
-      run: bun oxlint --fix --tsconfig ./tsconfig.json --import-plugin
+      run: ~/.bun/bin/bun oxlint --fix --tsconfig ./tsconfig.json --import-plugin

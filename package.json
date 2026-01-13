@@ -10,7 +10,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "format": "bun format:biome && bun format:oxc",
-    "format:biome": "bun biome check --apply --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files}",
+    "format:biome": "bun biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files}",
     "format:oxc": "bun oxlint --fix --tsconfig ./tsconfig.json --import-plugin"
   },
   "dependencies": {
