@@ -1,7 +1,7 @@
-import type { Component } from "solid-js";
+import type { Component, JSX } from "solid-js";
 
 const IconPill: Component<{
-  children: any;
+  children: JSX.Element;
   class: string;
 }> = (props) => {
   return (

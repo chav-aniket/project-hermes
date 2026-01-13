@@ -1,7 +1,7 @@
 import solidJs from "@astrojs/solid-js";
 import svelte from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
-import vercel from "@astrojs/vercel/serverless";
+import vercel from "@astrojs/vercel";
 // https://astro.build/config
 import AstroPWA from "@vite-pwa/astro";
 import { defineConfig } from "astro/config";
