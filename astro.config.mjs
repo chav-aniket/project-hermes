@@ -5,19 +5,12 @@ import vercel from "@astrojs/vercel";
 // https://astro.build/config
 import AstroPWA from "@vite-pwa/astro";
 import { defineConfig } from "astro/config";
-import biomePlugin from "vite-plugin-biome";
 import oxlintPlugin from "vite-plugin-oxlint";
 
 // https://astro.build/config
 export default defineConfig({
   vite: {
-    plugins: [
-      biomePlugin({
-        mode: "check",
-        files: ".",
-      }),
-      oxlintPlugin(),
-    ],
+    plugins: [oxlintPlugin()],
   },
   integrations: [
     solidJs(),
