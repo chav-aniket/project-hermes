@@ -1,14 +1,18 @@
 # EXAMPLE USAGE:
 #
 #   Refer for explanation to following link:
-#   https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+#   https://lefthook.dev/configuration/
 #
 pre-commit:
   parallel: true
   commands:
     biome:
       glob: "*.{js,ts,jsx,tsx,astro,svelte}"
-      run: ~/.bun/bin/bun biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files} && git update-index --again
+      env:
+        PATH: "{HOME}/.bun/bin:{PATH}"
+      run: bun biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files} && git update-index --again
     oxc:
       glob: "*.{js,ts,jsx,tsx,astro,svelte}"
-      run: ~/.bun/bin/bun oxlint --fix --tsconfig ./tsconfig.json --import-plugin
+      env:
+        PATH: "{HOME}/.bun/bin:{PATH}"
+      run: bun oxlint --fix --tsconfig ./tsconfig.json --import-plugin
