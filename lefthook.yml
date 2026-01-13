@@ -6,13 +6,13 @@
 pre-commit:
   parallel: true
   commands:
-    biome:
+    oxfmt:
+      glob: "*.{js,ts,jsx,tsx,json}"
+      env:
+        PATH: $HOME/.bun/bin:$PATH
+      run: bun oxfmt {staged_files} && git update-index --again
+    oxlint:
       glob: "*.{js,ts,jsx,tsx,astro,svelte}"
       env:
         PATH: $HOME/.bun/bin:$PATH
-      run: bun biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files} && git update-index --again
-    oxc:
-      glob: "*.{js,ts,jsx,tsx,astro,svelte}"
-      env:
-        PATH: $HOME/.bun/bin:$PATH
-      run: bun oxlint --fix --tsconfig ./tsconfig.json --import-plugin
+      run: bun oxlint --fix {staged_files} && git update-index --again

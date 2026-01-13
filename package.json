@@ -1,17 +1,18 @@
 {
   "name": "project-hermes",
-  "type": "module",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "bun format:biome && bun format:oxc",
-    "format:biome": "bun biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --diagnostic-level=error {staged_files}",
-    "format:oxc": "bun oxlint --fix --tsconfig ./tsconfig.json --import-plugin"
+    "format": "bun oxfmt",
+    "format:check": "bun oxfmt --check",
+    "lint": "bun oxlint",
+    "lint:fix": "bun oxlint --fix"
   },
   "dependencies": {
     "@astrojs/solid-js": "^5.1.3",
@@ -35,11 +36,10 @@
     "workbox-window": "^7.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.7.3",
     "lefthook": "^1.6.12",
-    "oxlint": "^0.4.1",
+    "oxfmt": "^0.24.0",
+    "oxlint": "^1.39.0",
     "tsconfig-paths": "^4.2.0",
-    "vite-plugin-biome": "^1.0.9",
     "vite-plugin-oxlint": "^1.0.2"
   }
 }
