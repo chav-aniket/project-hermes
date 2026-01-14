@@ -48,26 +48,50 @@ export const setDark = () => {
   localStorage.theme = "dark";
 };
 
-const WASH_DURATION = 500;
+// Animation durations (match tailwind.config.ts)
+const MOBILE_WAVE_DURATION = 500;
+const SUNRISE_DURATION = 1000;
+const SUNSET_DURATION = 1700;
+const MOBILE_BREAKPOINT = 768;
+
+const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
 
 export const toggleTheme = () => {
   const html = document.documentElement;
   const goingDark = localStorage.theme !== "dark";
 
-  // Update theme-color immediately so status bar animates with wash
+  // Update theme-color immediately so status bar animates with transition
   updateThemeColor(goingDark);
 
-  // Start wash animation
-  html.classList.add("theme-wash");
+  if (isMobile()) {
+    // Mobile: wave overlay animation (syncs with iOS status bar)
+    html.classList.add("theme-wave");
 
-  // At end of animation, switch the actual theme and clean up
-  setTimeout(() => {
-    if (goingDark) {
-      setDark();
-    } else {
-      setLight();
-    }
-    html.classList.toggle("dark", goingDark);
-    html.classList.remove("theme-wash");
-  }, WASH_DURATION);
+    setTimeout(() => {
+      if (goingDark) {
+        setDark();
+      } else {
+        setLight();
+      }
+      html.classList.toggle("dark", goingDark);
+      html.classList.remove("theme-wave");
+    }, MOBILE_WAVE_DURATION);
+  } else {
+    // Desktop: sunrise/sunset color transition (inspired by jzhao.xyz)
+    const animationClass = goingDark ? "theme-sunset" : "theme-sunrise";
+    const duration = goingDark ? SUNSET_DURATION : SUNRISE_DURATION;
+
+    html.classList.add(animationClass);
+
+    // Update localStorage and dark class at end of animation
+    setTimeout(() => {
+      if (goingDark) {
+        setDark();
+      } else {
+        setLight();
+      }
+      html.classList.toggle("dark", goingDark);
+      html.classList.remove(animationClass);
+    }, duration);
+  }
 };

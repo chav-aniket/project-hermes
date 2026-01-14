@@ -71,11 +71,10 @@ const { title } = Astro.props;
     @apply bg-primary-dark;
   }
 
-  /* Theme wash animation overlay */
+  /* Mobile: Wave overlay for iOS status bar sync */
   html::before {
     content: "";
     @apply fixed pointer-events-none z-[9999] bg-primary-dark;
-    /* Mobile: wave from top - offset by 100% (starts above viewport) */
     top: 0;
     left: 0;
     right: 0;
@@ -96,34 +95,29 @@ const { title } = Astro.props;
     );
   }
 
-  /* Desktop: sunrise/moonrise from bottom-left */
-  @media (min-width: 768px) {
-    html::before {
-      @apply rounded-full;
-      top: auto;
-      bottom: 0;
-      height: auto;
-      width: 200vmax;
-      aspect-ratio: 1;
-      transform: scale(0);
-      transform-origin: bottom left;
-      clip-path: none;
-    }
-  }
-
   html.dark::before {
     @apply bg-primary-light;
   }
 
-  /* Trigger animations */
-  html.theme-wash::before {
+  /* Mobile: trigger wave animation */
+  html.theme-wave::before {
     @apply animate-wash-wave;
   }
 
+  /* Desktop: hide the wave overlay, use color transitions instead */
   @media (min-width: 768px) {
-    html.theme-wash::before {
-      @apply animate-wash-diagonal;
+    html::before {
+      display: none;
     }
+  }
+
+  /* Desktop: sunrise/sunset color transitions (inspired by jzhao.xyz) */
+  html.theme-sunrise {
+    @apply animate-sunrise;
+  }
+
+  html.theme-sunset {
+    @apply animate-sunset;
   }
   code {
     font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
