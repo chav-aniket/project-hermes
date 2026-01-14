@@ -84,46 +84,71 @@ const { title } = Astro.props;
     outline: none;
   }
 
-  /* Theme transition phases - fast with shadow depth effects */
+  /* Theme transition - 4 phases at 400ms each */
   :root {
-    --melt-duration: 200ms;
-    --reveal-duration: 250ms;
+    --phase-duration: 400ms;
   }
 
-  /* Phase 1: Melt - content sinks into the page with shadows */
+  /* Phase 1: Shadows appear on content */
+  html.theme-shadow-in main {
+    transition: filter var(--phase-duration) ease-out !important;
+    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3))
+      drop-shadow(0 8px 40px rgba(0, 0, 0, 0.2));
+  }
+
+  html.dark.theme-shadow-in main {
+    filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.15))
+      drop-shadow(0 8px 40px rgba(255, 255, 255, 0.1));
+  }
+
+  /* Phase 2: Content melts (with shadows still visible) */
   html.theme-melt main {
     transition:
-      opacity var(--melt-duration) ease-in,
-      filter var(--melt-duration) ease-in,
-      transform var(--melt-duration) ease-in !important;
+      opacity var(--phase-duration) ease-in,
+      filter var(--phase-duration) ease-in,
+      transform var(--phase-duration) ease-in !important;
     opacity: 0;
-    filter: blur(8px);
-    transform: scale(0.98);
+    filter: blur(12px) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+    transform: scale(0.97);
   }
 
-  /* Phase 2: Hidden during background transition */
+  /* Phase 2b: Hidden during color transition */
   html.theme-hidden main {
     opacity: 0;
-    filter: blur(8px);
-    transform: scale(0.98);
+    filter: blur(12px);
+    transform: scale(0.97);
     transition: none !important;
   }
 
-  /* Phase 3: Reveal - content emerges from the page */
-  html.theme-reveal main {
+  /* Phase 3: Content unmelts (shadows still present) */
+  html.theme-unmelt main {
     transition:
-      opacity var(--reveal-duration) ease-out,
-      filter var(--reveal-duration) ease-out,
-      transform var(--reveal-duration) ease-out !important;
+      opacity var(--phase-duration) ease-out,
+      filter var(--phase-duration) ease-out,
+      transform var(--phase-duration) ease-out !important;
     opacity: 1;
-    filter: blur(0);
+    filter: blur(0) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3))
+      drop-shadow(0 8px 40px rgba(0, 0, 0, 0.2));
     transform: scale(1);
   }
 
-  /* Toggle button stays visible and transitions smoothly */
+  html.dark.theme-unmelt main {
+    filter: blur(0) drop-shadow(0 4px 20px rgba(255, 255, 255, 0.15))
+      drop-shadow(0 8px 40px rgba(255, 255, 255, 0.1));
+  }
+
+  /* Phase 4: Shadows fade away */
+  html.theme-shadow-out main {
+    transition: filter var(--phase-duration) ease-in !important;
+    filter: none;
+  }
+
+  /* Toggle button stays visible throughout */
+  html.theme-shadow-in [data-theme-toggle],
   html.theme-melt [data-theme-toggle],
   html.theme-hidden [data-theme-toggle],
-  html.theme-reveal [data-theme-toggle] {
+  html.theme-unmelt [data-theme-toggle],
+  html.theme-shadow-out [data-theme-toggle] {
     opacity: 1 !important;
     filter: none !important;
     transform: none !important;
