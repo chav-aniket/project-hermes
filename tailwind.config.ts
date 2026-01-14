@@ -66,8 +66,8 @@ export default {
       },
       animation: {
         "wash-wave": "wash-wave 400ms ease-out forwards",
-        sunrise: "sunrise 500ms ease-in-out forwards",
-        sunset: "sunset 600ms ease-in-out forwards",
+        sunrise: "sunrise 400ms ease-in-out forwards",
+        sunset: "sunset 400ms ease-in-out forwards",
       },
     },
   },

@@ -48,12 +48,8 @@ export const setDark = () => {
   localStorage.theme = "dark";
 };
 
-// Animation durations (must match CSS/Tailwind config)
-const MOBILE_WAVE_DURATION = 400;
-const SUNRISE_DURATION = 500;
-const SUNSET_DURATION = 600;
-const MELT_DURATION = 200;
-const REVEAL_DURATION = 250;
+// Animation durations (must match CSS --phase-duration)
+const PHASE_DURATION = 400;
 const MOBILE_BREAKPOINT = 768;
 
 const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
@@ -79,34 +75,40 @@ export const toggleTheme = () => {
     setTimeout(() => {
       html.classList.toggle("dark", goingDark);
       html.classList.remove("theme-wave");
-    }, MOBILE_WAVE_DURATION);
+    }, PHASE_DURATION);
   } else {
-    // Desktop: three-phase transition (inspired by jzhao.xyz sunlit)
-    // Phase 1: Melt - components fade into background
-    // Phase 2: Background transitions through sunrise/sunset colors
-    // Phase 3: Reveal - components fade back in with new theme
+    // Desktop: 4-phase transition
+    // Phase 1: Shadows appear (400ms)
+    // Phase 2: Content melts + colors transition (400ms)
+    // Phase 3: Content unmelts (400ms)
+    // Phase 4: Shadows disappear (400ms)
     const animationClass = goingDark ? "theme-sunset" : "theme-sunrise";
-    const bgDuration = goingDark ? SUNSET_DURATION : SUNRISE_DURATION;
 
-    // Phase 1: Melt
-    html.classList.add("theme-melt");
+    // Phase 1: Shadows appear
+    html.classList.add("theme-shadow-in");
 
     setTimeout(() => {
-      // Phase 2: Hidden + background animation + theme switch
-      html.classList.remove("theme-melt");
-      html.classList.add("theme-hidden", animationClass);
+      // Phase 2: Melt + color transition + theme switch
+      html.classList.remove("theme-shadow-in");
+      html.classList.add("theme-melt", animationClass);
       html.classList.toggle("dark", goingDark);
 
       setTimeout(() => {
-        // Phase 3: Reveal
-        html.classList.remove("theme-hidden", animationClass);
-        html.classList.add("theme-reveal");
+        // Phase 3: Unmelt
+        html.classList.remove("theme-melt", animationClass);
+        html.classList.add("theme-unmelt");
 
         setTimeout(() => {
-          // Clean up
-          html.classList.remove("theme-reveal");
-        }, REVEAL_DURATION);
-      }, bgDuration);
-    }, MELT_DURATION);
+          // Phase 4: Shadows fade out
+          html.classList.remove("theme-unmelt");
+          html.classList.add("theme-shadow-out");
+
+          setTimeout(() => {
+            // Clean up
+            html.classList.remove("theme-shadow-out");
+          }, PHASE_DURATION);
+        }, PHASE_DURATION);
+      }, PHASE_DURATION);
+    }, PHASE_DURATION);
   }
 };
