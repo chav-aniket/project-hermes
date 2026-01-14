@@ -154,14 +154,53 @@ const { title } = Astro.props;
     transform: none !important;
   }
 
-  /* Desktop: animate background through sunrise/sunset colors */
+  /* Desktop: gradient sweep across page */
   @media (min-width: 768px) {
-    html.theme-sunrise {
-      @apply animate-sunrise;
+    html::after {
+      content: "";
+      @apply fixed inset-0 pointer-events-none z-[9998];
+      transform: translateX(-100%);
     }
 
-    html.theme-sunset {
-      @apply animate-sunset;
+    /* Sunrise: sweeps left to right (east) - warm colors */
+    html.theme-sunrise::after {
+      background: linear-gradient(
+        90deg,
+        theme(colors.primary.light) 0%,
+        theme(colors.primary.light) 60%,
+        transparent 100%
+      );
+      animation: sweep-right var(--phase-duration) ease-in-out forwards;
+    }
+
+    /* Sunset: sweeps right to left (west) - cool colors */
+    html.theme-sunset::after {
+      background: linear-gradient(
+        -90deg,
+        theme(colors.primary.dark) 0%,
+        theme(colors.primary.dark) 60%,
+        transparent 100%
+      );
+      transform: translateX(100%);
+      animation: sweep-left var(--phase-duration) ease-in-out forwards;
+    }
+  }
+
+  @keyframes sweep-right {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes sweep-left {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
     }
   }
 

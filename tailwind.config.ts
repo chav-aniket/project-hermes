@@ -1,13 +1,6 @@
 import type { Config } from "tailwindcss";
 import colours from "tailwindcss/colors";
 
-// Theme transition colors - simplified for smoother, faster transitions
-const themeTransition = {
-  day: "#fed7aa", // orange-200 (light theme)
-  golden: "#e9a865", // warm midpoint
-  twilight: "#4a5568", // cool gray midpoint
-  night: "#0f172a", // slate-900 (dark theme)
-};
 
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
@@ -39,8 +32,6 @@ export default {
       textDark: {
         DEFAULT: colours.gray[300],
       },
-      // Theme transition colors for animations
-      transition: themeTransition,
     },
     extend: {
       keyframes: {
@@ -49,25 +40,9 @@ export default {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(0)" },
         },
-        // Sunrise: night → twilight → golden → day (fast, smooth)
-        sunrise: {
-          "0%": { backgroundColor: themeTransition.night },
-          "40%": { backgroundColor: themeTransition.twilight },
-          "70%": { backgroundColor: themeTransition.golden },
-          "100%": { backgroundColor: themeTransition.day },
-        },
-        // Sunset: day → golden → twilight → night (smooth descent)
-        sunset: {
-          "0%": { backgroundColor: themeTransition.day },
-          "30%": { backgroundColor: themeTransition.golden },
-          "60%": { backgroundColor: themeTransition.twilight },
-          "100%": { backgroundColor: themeTransition.night },
-        },
       },
       animation: {
         "wash-wave": "wash-wave 400ms ease-out forwards",
-        sunrise: "sunrise 400ms ease-in-out forwards",
-        sunset: "sunset 400ms ease-in-out forwards",
       },
     },
   },
