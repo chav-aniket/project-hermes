@@ -71,53 +71,61 @@ const { title } = Astro.props;
     @apply bg-primary-dark;
   }
 
-  /* Mobile: Wave overlay for iOS status bar sync */
+  /* Theme transition overlay - covers everything during animation */
   html::before {
     content: "";
-    @apply fixed pointer-events-none z-[9999] bg-primary-dark;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 120vh;
-    transform: translateY(-100%);
-    /* Wave-shaped bottom edge */
-    clip-path: polygon(
-      0% 0%,
-      100% 0%,
-      100% 85%,
-      90% 88%,
-      75% 85%,
-      60% 90%,
-      45% 85%,
-      30% 90%,
-      15% 85%,
-      0% 88%
-    );
+    @apply fixed inset-0 pointer-events-none z-[9999];
+    opacity: 0;
   }
 
-  html.dark::before {
-    @apply bg-primary-light;
-  }
-
-  /* Mobile: trigger wave animation */
-  html.theme-wave::before {
-    @apply animate-wash-wave;
-  }
-
-  /* Desktop: hide the wave overlay, use color transitions instead */
-  @media (min-width: 768px) {
+  /* Mobile: wave shape from top */
+  @media (max-width: 767px) {
     html::before {
-      display: none;
+      @apply bg-primary-dark;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: auto;
+      height: 120vh;
+      opacity: 1;
+      transform: translateY(-100%);
+      clip-path: polygon(
+        0% 0%,
+        100% 0%,
+        100% 85%,
+        90% 88%,
+        75% 85%,
+        60% 90%,
+        45% 85%,
+        30% 90%,
+        15% 85%,
+        0% 88%
+      );
+    }
+
+    html.dark::before {
+      @apply bg-primary-light;
+    }
+
+    html.theme-wave::before {
+      @apply animate-wash-wave;
     }
   }
 
-  /* Desktop: sunrise/sunset color transitions (inspired by jzhao.xyz) */
-  html.theme-sunrise {
-    @apply animate-sunrise;
-  }
+  /* Desktop: full-screen overlay with sunrise/sunset color animation */
+  @media (min-width: 768px) {
+    html.theme-sunrise::before,
+    html.theme-sunset::before {
+      opacity: 1;
+    }
 
-  html.theme-sunset {
-    @apply animate-sunset;
+    html.theme-sunrise::before {
+      @apply animate-sunrise;
+    }
+
+    html.theme-sunset::before {
+      @apply animate-sunset;
+    }
   }
   code {
     font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
