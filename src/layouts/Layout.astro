@@ -14,15 +14,22 @@ const { title } = Astro.props;
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- TODO: plenty left to do for PWA: https://vite-pwa-org.netlify.app/guide/pwa-minimal-requirements.html -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Aniket's Observatorium" />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <meta name="generator" content={Astro.generator} />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-    <link rel="mask-icon" href="/mask-icon.svg" color="#FFFFFF" />
-    <meta name="theme-color" content="#ffffff" />
+    <link rel="mask-icon" href="/mask-icon.svg" color="#ea580c" />
+    <!-- Theme colors matching site background -->
+    <meta name="theme-color" content="#fed7aa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <!-- iOS PWA status bar -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
     <script src="../pwa.ts"></script>
     <script set:html={initThemeScript} />
