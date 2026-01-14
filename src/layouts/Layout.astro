@@ -95,14 +95,11 @@ const { title } = Astro.props;
   }
 
   /* Phase 1: Shadows appear (midday overhead light) */
-  /* Container shadows for cards/pills */
+  /* Container shadows for project cards and pills/tags */
   html.theme-shadow-in [class*="card"],
   html.theme-shadow-in [class*="Card"],
   html.theme-shadow-in [class*="pill"],
   html.theme-shadow-in [class*="Pill"],
-  html.theme-shadow-in [class*="badge"],
-  html.theme-shadow-in [class*="Badge"],
-  html.theme-shadow-in [class*="chip"],
   html.theme-shadow-in [class*="tag"] {
     transition: box-shadow var(--phase-duration) ease-out !important;
     box-shadow: var(--box-shadow-light);
@@ -112,24 +109,21 @@ const { title } = Astro.props;
   html.dark.theme-shadow-in [class*="Card"],
   html.dark.theme-shadow-in [class*="pill"],
   html.dark.theme-shadow-in [class*="Pill"],
-  html.dark.theme-shadow-in [class*="badge"],
-  html.dark.theme-shadow-in [class*="Badge"],
-  html.dark.theme-shadow-in [class*="chip"],
   html.dark.theme-shadow-in [class*="tag"] {
     box-shadow: var(--box-shadow-dark);
   }
 
-  /* Text shadows for standalone text (not in cards/pills) */
-  html.theme-shadow-in h1:not([class*="card"] *):not([class*="Card"] *),
-  html.theme-shadow-in h2:not([class*="card"] *):not([class*="Card"] *),
-  html.theme-shadow-in h3:not([class*="card"] *):not([class*="Card"] *) {
+  /* Text shadows for main headings */
+  html.theme-shadow-in h1,
+  html.theme-shadow-in h2,
+  html.theme-shadow-in h3 {
     transition: text-shadow var(--phase-duration) ease-out !important;
     text-shadow: var(--text-shadow-light);
   }
 
-  html.dark.theme-shadow-in h1:not([class*="card"] *):not([class*="Card"] *),
-  html.dark.theme-shadow-in h2:not([class*="card"] *):not([class*="Card"] *),
-  html.dark.theme-shadow-in h3:not([class*="card"] *):not([class*="Card"] *) {
+  html.dark.theme-shadow-in h1,
+  html.dark.theme-shadow-in h2,
+  html.dark.theme-shadow-in h3 {
     text-shadow: var(--text-shadow-dark);
   }
 
@@ -158,32 +152,48 @@ const { title } = Astro.props;
     filter: blur(0);
   }
 
-  /* Keep text shadows visible during unmelt */
+  /* Keep shadows visible during unmelt */
+  html.theme-unmelt [class*="card"],
+  html.theme-unmelt [class*="Card"],
+  html.theme-unmelt [class*="pill"],
+  html.theme-unmelt [class*="Pill"],
+  html.theme-unmelt [class*="tag"] {
+    box-shadow: var(--box-shadow-light);
+  }
+
+  html.dark.theme-unmelt [class*="card"],
+  html.dark.theme-unmelt [class*="Card"],
+  html.dark.theme-unmelt [class*="pill"],
+  html.dark.theme-unmelt [class*="Pill"],
+  html.dark.theme-unmelt [class*="tag"] {
+    box-shadow: var(--box-shadow-dark);
+  }
+
   html.theme-unmelt h1,
   html.theme-unmelt h2,
-  html.theme-unmelt h3,
-  html.theme-unmelt p,
-  html.theme-unmelt span:not([class*="slider"]),
-  html.theme-unmelt a {
+  html.theme-unmelt h3 {
     text-shadow: var(--text-shadow-light);
   }
 
   html.dark.theme-unmelt h1,
   html.dark.theme-unmelt h2,
-  html.dark.theme-unmelt h3,
-  html.dark.theme-unmelt p,
-  html.dark.theme-unmelt span:not([class*="slider"]),
-  html.dark.theme-unmelt a {
+  html.dark.theme-unmelt h3 {
     text-shadow: var(--text-shadow-dark);
   }
 
-  /* Phase 4: Text shadows recede */
+  /* Phase 4: Shadows recede */
+  html.theme-shadow-out [class*="card"],
+  html.theme-shadow-out [class*="Card"],
+  html.theme-shadow-out [class*="pill"],
+  html.theme-shadow-out [class*="Pill"],
+  html.theme-shadow-out [class*="tag"] {
+    transition: box-shadow var(--phase-duration) ease-in !important;
+    box-shadow: none;
+  }
+
   html.theme-shadow-out h1,
   html.theme-shadow-out h2,
-  html.theme-shadow-out h3,
-  html.theme-shadow-out p,
-  html.theme-shadow-out span:not([class*="slider"]),
-  html.theme-shadow-out a {
+  html.theme-shadow-out h3 {
     transition: text-shadow var(--phase-duration) ease-in !important;
     text-shadow: none;
   }
