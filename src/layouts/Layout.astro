@@ -88,24 +88,49 @@ const { title } = Astro.props;
   :root {
     --phase-duration: 600ms;
     /* Strong midday shadows - like overhead sun/moon */
-    --shadow-light:
-      0 20px 40px rgba(0, 0, 0, 0.4),
-      0 8px 16px rgba(0, 0, 0, 0.3),
-      0 2px 4px rgba(0, 0, 0, 0.2);
-    --shadow-dark:
-      0 20px 40px rgba(255, 255, 255, 0.25),
-      0 8px 16px rgba(255, 255, 255, 0.2),
-      0 2px 4px rgba(255, 255, 255, 0.15);
+    --text-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --text-shadow-dark: 0 4px 12px rgba(255, 255, 255, 0.3);
+    --box-shadow-light: 0 8px 24px rgba(0, 0, 0, 0.3);
+    --box-shadow-dark: 0 8px 24px rgba(255, 255, 255, 0.2);
   }
 
-  /* Phase 1: Strong midday shadows appear */
-  html.theme-shadow-in main {
+  /* Phase 1: Shadows appear (midday overhead light) */
+  /* Container shadows for cards/pills */
+  html.theme-shadow-in [class*="card"],
+  html.theme-shadow-in [class*="Card"],
+  html.theme-shadow-in [class*="pill"],
+  html.theme-shadow-in [class*="Pill"],
+  html.theme-shadow-in [class*="badge"],
+  html.theme-shadow-in [class*="Badge"],
+  html.theme-shadow-in [class*="chip"],
+  html.theme-shadow-in [class*="tag"] {
     transition: box-shadow var(--phase-duration) ease-out !important;
-    box-shadow: var(--shadow-light);
+    box-shadow: var(--box-shadow-light);
   }
 
-  html.dark.theme-shadow-in main {
-    box-shadow: var(--shadow-dark);
+  html.dark.theme-shadow-in [class*="card"],
+  html.dark.theme-shadow-in [class*="Card"],
+  html.dark.theme-shadow-in [class*="pill"],
+  html.dark.theme-shadow-in [class*="Pill"],
+  html.dark.theme-shadow-in [class*="badge"],
+  html.dark.theme-shadow-in [class*="Badge"],
+  html.dark.theme-shadow-in [class*="chip"],
+  html.dark.theme-shadow-in [class*="tag"] {
+    box-shadow: var(--box-shadow-dark);
+  }
+
+  /* Text shadows for standalone text (not in cards/pills) */
+  html.theme-shadow-in h1:not([class*="card"] *):not([class*="Card"] *),
+  html.theme-shadow-in h2:not([class*="card"] *):not([class*="Card"] *),
+  html.theme-shadow-in h3:not([class*="card"] *):not([class*="Card"] *) {
+    transition: text-shadow var(--phase-duration) ease-out !important;
+    text-shadow: var(--text-shadow-light);
+  }
+
+  html.dark.theme-shadow-in h1:not([class*="card"] *):not([class*="Card"] *),
+  html.dark.theme-shadow-in h2:not([class*="card"] *):not([class*="Card"] *),
+  html.dark.theme-shadow-in h3:not([class*="card"] *):not([class*="Card"] *) {
+    text-shadow: var(--text-shadow-dark);
   }
 
   /* Phase 2: Content melts into the page */
@@ -115,14 +140,9 @@ const { title } = Astro.props;
       filter var(--phase-duration) ease-in !important;
     opacity: 0;
     filter: blur(16px);
-    box-shadow: var(--shadow-light);
   }
 
-  html.dark.theme-melt main {
-    box-shadow: var(--shadow-dark);
-  }
-
-  /* Phase 2b: Hidden during color transition */
+  /* Phase 2b: Hidden during color sweep */
   html.theme-hidden main {
     opacity: 0;
     filter: blur(16px);
@@ -136,88 +156,91 @@ const { title } = Astro.props;
       filter var(--phase-duration) ease-out !important;
     opacity: 1;
     filter: blur(0);
-    box-shadow: var(--shadow-light);
   }
 
-  html.dark.theme-unmelt main {
-    box-shadow: var(--shadow-dark);
+  /* Keep text shadows visible during unmelt */
+  html.theme-unmelt h1,
+  html.theme-unmelt h2,
+  html.theme-unmelt h3,
+  html.theme-unmelt p,
+  html.theme-unmelt span:not([class*="slider"]),
+  html.theme-unmelt a {
+    text-shadow: var(--text-shadow-light);
   }
 
-  /* Phase 4: Shadows recede */
-  html.theme-shadow-out main {
-    transition: box-shadow var(--phase-duration) ease-in !important;
-    box-shadow: none;
+  html.dark.theme-unmelt h1,
+  html.dark.theme-unmelt h2,
+  html.dark.theme-unmelt h3,
+  html.dark.theme-unmelt p,
+  html.dark.theme-unmelt span:not([class*="slider"]),
+  html.dark.theme-unmelt a {
+    text-shadow: var(--text-shadow-dark);
+  }
+
+  /* Phase 4: Text shadows recede */
+  html.theme-shadow-out h1,
+  html.theme-shadow-out h2,
+  html.theme-shadow-out h3,
+  html.theme-shadow-out p,
+  html.theme-shadow-out span:not([class*="slider"]),
+  html.theme-shadow-out a {
+    transition: text-shadow var(--phase-duration) ease-in !important;
+    text-shadow: none;
   }
 
   /* Toggle button stays visible throughout */
-  html.theme-shadow-in [data-theme-toggle],
-  html.theme-melt [data-theme-toggle],
-  html.theme-hidden [data-theme-toggle],
-  html.theme-unmelt [data-theme-toggle],
-  html.theme-shadow-out [data-theme-toggle] {
+  [data-theme-toggle],
+  [data-theme-toggle] * {
     opacity: 1 !important;
     filter: none !important;
-    box-shadow: none !important;
+    text-shadow: none !important;
   }
 
-  /* Desktop: color sweep across page during melt phase */
+  /* Desktop: color sweep that IS the transition */
   @media (min-width: 768px) {
     html::after {
       content: "";
       position: fixed;
       top: 0;
-      left: 0;
-      width: 200%;
+      width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 10000;
-      transform: translateX(-100%);
+      z-index: 9997;
       opacity: 0;
     }
 
-    /* Sunrise: warm sweep left to right (east) */
-    html.theme-sunrise::after {
-      opacity: 1;
-      background: linear-gradient(
-        90deg,
-        theme(colors.primary.light) 0%,
-        theme(colors.primary.light) 40%,
-        rgba(249, 180, 100, 0.9) 50%,
-        transparent 60%
-      );
-      animation: sweep-east var(--phase-duration) ease-in-out forwards;
-    }
-
-    /* Sunset: cool sweep right to left (west) */
+    /* Sunset: dark color sweeps from right to left */
     html.theme-sunset::after {
       opacity: 1;
-      background: linear-gradient(
-        -90deg,
-        theme(colors.primary.dark) 0%,
-        theme(colors.primary.dark) 40%,
-        rgba(71, 85, 105, 0.9) 50%,
-        transparent 60%
-      );
-      transform: translateX(100%);
-      animation: sweep-west var(--phase-duration) ease-in-out forwards;
+      background: theme(colors.primary.dark);
+      animation: sweep-left var(--phase-duration) linear forwards;
+    }
+
+    /* Sunrise: light color sweeps from left to right */
+    html.theme-sunrise::after {
+      opacity: 1;
+      background: theme(colors.primary.light);
+      animation: sweep-right var(--phase-duration) linear forwards;
     }
   }
 
-  @keyframes sweep-east {
-    from {
+  /* Sweep from right edge to left edge */
+  @keyframes sweep-left {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  /* Sweep from left edge to right edge */
+  @keyframes sweep-right {
+    0% {
       transform: translateX(-100%);
     }
-    to {
-      transform: translateX(50%);
-    }
-  }
-
-  @keyframes sweep-west {
-    from {
-      transform: translateX(100%);
-    }
-    to {
-      transform: translateX(-50%);
+    100% {
+      transform: translateX(0%);
     }
   }
 

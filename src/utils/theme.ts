@@ -78,9 +78,9 @@ export const toggleTheme = () => {
     }, PHASE_DURATION);
   } else {
     // Desktop: 4-phase transition (600ms each = 2.4s total)
-    // Phase 1: Strong midday shadows appear
-    // Phase 2: Content melts + color sweep across page
-    // Phase 3: Content emerges
+    // Phase 1: Text shadows appear (midday overhead light)
+    // Phase 2: Content melts + color sweeps across
+    // Phase 3: Content emerges with new theme
     // Phase 4: Shadows recede
     const animationClass = goingDark ? "theme-sunset" : "theme-sunrise";
 
@@ -88,13 +88,15 @@ export const toggleTheme = () => {
     html.classList.add("theme-shadow-in");
 
     setTimeout(() => {
-      // Phase 2: Melt + color sweep + theme switch
+      // Phase 2: Melt content + start color sweep
       html.classList.remove("theme-shadow-in");
       html.classList.add("theme-melt", animationClass);
-      html.classList.toggle("dark", goingDark);
 
+      // Toggle theme at END of sweep (when it covers the page)
       setTimeout(() => {
-        // Phase 3: Unmelt
+        html.classList.toggle("dark", goingDark);
+
+        // Phase 3: Unmelt (sweep class removed so ::after disappears)
         html.classList.remove("theme-melt", animationClass);
         html.classList.add("theme-unmelt");
 
