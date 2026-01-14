@@ -1,11 +1,7 @@
 <script>
   import { isDarkTheme, toggleTheme } from "@utils/theme";
-  if (isDarkTheme()) {
-    localStorage.setItem("theme", "dark");
-    document.documentElement.classList.add("dark");
-  } else {
-    localStorage.setItem("theme", "light");
-  }
+  // Theme is initialized in Layout.astro before hydration - we just need
+  // to sync the checkbox state with the current theme
   let isDark = isDarkTheme();
 </script>
 
