@@ -48,10 +48,12 @@ export const setDark = () => {
   localStorage.theme = "dark";
 };
 
-// Animation durations (match tailwind.config.ts)
+// Animation durations (must match CSS variables in Layout.astro)
 const MOBILE_WAVE_DURATION = 500;
 const SUNRISE_DURATION = 1000;
 const SUNSET_DURATION = 1700;
+const MELT_DURATION = 300;
+const REVEAL_DURATION = 400;
 const MOBILE_BREAKPOINT = 768;
 
 const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
@@ -60,38 +62,51 @@ export const toggleTheme = () => {
   const html = document.documentElement;
   const goingDark = localStorage.theme !== "dark";
 
-  // Update theme-color immediately so status bar animates with transition
+  // Update theme-color for status bar
   updateThemeColor(goingDark);
+
+  // Update localStorage immediately
+  if (goingDark) {
+    setDark();
+  } else {
+    setLight();
+  }
 
   if (isMobile()) {
     // Mobile: wave overlay animation (syncs with iOS status bar)
     html.classList.add("theme-wave");
 
     setTimeout(() => {
-      if (goingDark) {
-        setDark();
-      } else {
-        setLight();
-      }
       html.classList.toggle("dark", goingDark);
       html.classList.remove("theme-wave");
     }, MOBILE_WAVE_DURATION);
   } else {
-    // Desktop: sunrise/sunset color transition (inspired by jzhao.xyz)
+    // Desktop: three-phase transition (inspired by jzhao.xyz sunlit)
+    // Phase 1: Melt - components fade into background
+    // Phase 2: Background transitions through sunrise/sunset colors
+    // Phase 3: Reveal - components fade back in with new theme
     const animationClass = goingDark ? "theme-sunset" : "theme-sunrise";
-    const duration = goingDark ? SUNSET_DURATION : SUNRISE_DURATION;
+    const bgDuration = goingDark ? SUNSET_DURATION : SUNRISE_DURATION;
 
-    html.classList.add(animationClass);
+    // Phase 1: Melt
+    html.classList.add("theme-melt");
 
-    // Update localStorage and dark class at end of animation
     setTimeout(() => {
-      if (goingDark) {
-        setDark();
-      } else {
-        setLight();
-      }
+      // Phase 2: Hidden + background animation + theme switch
+      html.classList.remove("theme-melt");
+      html.classList.add("theme-hidden", animationClass);
       html.classList.toggle("dark", goingDark);
-      html.classList.remove(animationClass);
-    }, duration);
+
+      setTimeout(() => {
+        // Phase 3: Reveal
+        html.classList.remove("theme-hidden", animationClass);
+        html.classList.add("theme-reveal");
+
+        setTimeout(() => {
+          // Clean up
+          html.classList.remove("theme-reveal");
+        }, REVEAL_DURATION);
+      }, bgDuration);
+    }, MELT_DURATION);
   }
 };
