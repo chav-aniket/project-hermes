@@ -18,11 +18,9 @@ export const initThemeScript = `(function(){
 })();`;
 
 export const isDarkTheme = () => {
-  return (
-    localStorage.theme === "dark" ||
-    (!("theme" in localStorage) &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
-  );
+  // Check the actual DOM state rather than re-computing from localStorage/system
+  // This ensures the toggle always matches what's visually displayed
+  return document.documentElement.classList.contains("dark");
 };
 
 export const setLight = () => {
