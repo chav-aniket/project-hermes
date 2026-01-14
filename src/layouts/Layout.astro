@@ -57,7 +57,7 @@ const { title } = Astro.props;
   }
   html {
     font-family: "JetBrains Mono", monospace;
-    @apply bg-primary-light duration-500;
+    @apply bg-primary-light relative;
     box-sizing: border-box;
     text-decoration: none;
   }
@@ -69,6 +69,61 @@ const { title } = Astro.props;
 
   html.dark {
     @apply bg-primary-dark;
+  }
+
+  /* Theme wash animation overlay */
+  html::before {
+    content: "";
+    @apply fixed pointer-events-none z-[9999] bg-primary-dark;
+    /* Mobile: wave from top - offset by 100% (starts above viewport) */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120vh;
+    transform: translateY(-100%);
+    /* Wave-shaped bottom edge */
+    clip-path: polygon(
+      0% 0%,
+      100% 0%,
+      100% 85%,
+      90% 88%,
+      75% 85%,
+      60% 90%,
+      45% 85%,
+      30% 90%,
+      15% 85%,
+      0% 88%
+    );
+  }
+
+  /* Desktop: sunrise/moonrise from bottom-left */
+  @media (min-width: 768px) {
+    html::before {
+      @apply rounded-full;
+      top: auto;
+      bottom: 0;
+      height: auto;
+      width: 200vmax;
+      aspect-ratio: 1;
+      transform: scale(0);
+      transform-origin: bottom left;
+      clip-path: none;
+    }
+  }
+
+  html.dark::before {
+    @apply bg-primary-light;
+  }
+
+  /* Trigger animations */
+  html.theme-wash::before {
+    @apply animate-wash-wave;
+  }
+
+  @media (min-width: 768px) {
+    html.theme-wash::before {
+      @apply animate-wash-diagonal;
+    }
   }
   code {
     font-family: Menlo, Monaco, Lucida Console, Liberation Mono,

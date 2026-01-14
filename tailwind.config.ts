@@ -32,7 +32,22 @@ export default {
         DEFAULT: colours.gray[300],
       },
     },
-    extend: {},
+    extend: {
+      keyframes: {
+        "wash-wave": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        "wash-diagonal": {
+          "0%": { transform: "scale(0)" },
+          "100%": { transform: "scale(2)" },
+        },
+      },
+      animation: {
+        "wash-wave": "wash-wave 500ms ease-out forwards",
+        "wash-diagonal": "wash-diagonal 500ms ease-out forwards",
+      },
+    },
   },
   plugins: [],
   darkMode: "class",

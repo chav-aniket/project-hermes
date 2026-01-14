@@ -48,13 +48,26 @@ export const setDark = () => {
   localStorage.theme = "dark";
 };
 
+const WASH_DURATION = 500;
+
 export const toggleTheme = () => {
-  const theme = localStorage.theme;
-  if (theme === "dark") {
-    setLight();
-    setTheme();
-  } else {
-    setDark();
-    setTheme();
-  }
+  const html = document.documentElement;
+  const goingDark = localStorage.theme !== "dark";
+
+  // Update theme-color immediately so status bar animates with wash
+  updateThemeColor(goingDark);
+
+  // Start wash animation
+  html.classList.add("theme-wash");
+
+  // At end of animation, switch the actual theme and clean up
+  setTimeout(() => {
+    if (goingDark) {
+      setDark();
+    } else {
+      setLight();
+    }
+    html.classList.toggle("dark", goingDark);
+    html.classList.remove("theme-wash");
+  }, WASH_DURATION);
 };
