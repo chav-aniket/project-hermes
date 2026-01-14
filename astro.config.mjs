@@ -25,7 +25,9 @@ export default defineConfig({
       manifest: {
         name: "Hermes",
         short_name: "Hermes",
-        theme_color: "#ffffff",
+        description: "Aniket's Observatorium",
+        theme_color: "#fed7aa",
+        background_color: "#fed7aa",
         icons: [
           {
             src: "hermes-192x192.png",
