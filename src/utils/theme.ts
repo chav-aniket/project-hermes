@@ -1,11 +1,25 @@
+const THEME_COLORS = {
+  light: "#fed7aa",
+  dark: "#0f172a",
+};
+
+const updateThemeColor = (isDark: boolean) => {
+  const color = isDark ? THEME_COLORS.dark : THEME_COLORS.light;
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", color);
+};
+
 export const setTheme = () => {
   const userTheme = localStorage.getItem("theme");
   const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  if (userTheme === "dark" || (!userTheme && systemTheme)) {
+  const isDark = userTheme === "dark" || (!userTheme && systemTheme);
+  if (isDark) {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");
   }
+  updateThemeColor(isDark);
 };
 
 // Inline script for immediate execution before page render (prevents flash)
@@ -13,8 +27,11 @@ export const setTheme = () => {
 export const initThemeScript = `(function(){
   var t=localStorage.getItem("theme");
   var s=window.matchMedia("(prefers-color-scheme: dark)").matches;
-  if(t==="dark"||(!t&&s)){document.documentElement.classList.add("dark")}
+  var d=t==="dark"||(!t&&s);
+  if(d){document.documentElement.classList.add("dark")}
   else{document.documentElement.classList.remove("dark")}
+  var m=document.querySelector('meta[name="theme-color"]');
+  if(m)m.setAttribute("content",d?"#0f172a":"#fed7aa");
 })();`;
 
 export const isDarkTheme = () => {
