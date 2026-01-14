@@ -1,10 +1,8 @@
 ---
 import { pwaInfo } from "virtual:pwa-info";
-import { inject } from "@vercel/analytics";
 
 import ReloadPrompt from "@astroComponents/ReloadPrompt.astro";
-
-import { setTheme } from "@utils/theme";
+import { initThemeScript } from "@utils/theme";
 
 export interface Props {
 	title: string;
@@ -27,8 +25,9 @@ const { title } = Astro.props;
     <meta name="theme-color" content="#ffffff" />
 
     <script src="../pwa.ts"></script>
-    <script is:inline>
-      setTheme();
+    <script set:html={initThemeScript} />
+    <script>
+      import { inject } from "@vercel/analytics";
       inject({ mode: import.meta.env.MODE });
     </script>
     {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
