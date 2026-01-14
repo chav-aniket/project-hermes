@@ -5,11 +5,9 @@ export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
     colors: {
-      // Include standard colors needed by components
       gray: colours.gray,
       white: colours.white,
       transparent: "transparent",
-      // Custom theme colors
       primary: {
         DEFAULT: colours.slate[900],
         light: colours.orange[200],
@@ -32,7 +30,6 @@ export default {
         DEFAULT: colours.gray[300],
       },
     },
-    extend: {},
   },
   plugins: [],
   darkMode: "class",
