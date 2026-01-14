@@ -48,12 +48,12 @@ export const setDark = () => {
   localStorage.theme = "dark";
 };
 
-// Animation durations (must match CSS variables in Layout.astro)
-const MOBILE_WAVE_DURATION = 500;
-const SUNRISE_DURATION = 1000;
-const SUNSET_DURATION = 1700;
-const MELT_DURATION = 300;
-const REVEAL_DURATION = 400;
+// Animation durations (must match CSS/Tailwind config)
+const MOBILE_WAVE_DURATION = 400;
+const SUNRISE_DURATION = 500;
+const SUNSET_DURATION = 600;
+const MELT_DURATION = 200;
+const REVEAL_DURATION = 250;
 const MOBILE_BREAKPOINT = 768;
 
 const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;

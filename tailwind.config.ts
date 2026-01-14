@@ -1,14 +1,11 @@
 import type { Config } from "tailwindcss";
 import colours from "tailwindcss/colors";
 
-// Theme transition colors (inspired by jzhao.xyz sunlit effect)
-// These create natural sunrise/sunset color progressions
+// Theme transition colors - simplified for smoother, faster transitions
 const themeTransition = {
   day: "#fed7aa", // orange-200 (light theme)
-  evening: "#fccc83", // golden hour
-  dusk: "#db7a2a", // deep amber
-  morning: "#9fb3bf", // soft blue-gray
-  dawn: "#16132b", // dark purple
+  golden: "#e9a865", // warm midpoint
+  twilight: "#4a5568", // cool gray midpoint
   night: "#0f172a", // slate-900 (dark theme)
 };
 
@@ -52,26 +49,25 @@ export default {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(0)" },
         },
-        // Sunrise: night → dawn → morning → day (1s, quick awakening)
+        // Sunrise: night → twilight → golden → day (fast, smooth)
         sunrise: {
           "0%": { backgroundColor: themeTransition.night },
-          "10%": { backgroundColor: themeTransition.dawn },
-          "35%": { backgroundColor: themeTransition.morning },
+          "40%": { backgroundColor: themeTransition.twilight },
+          "70%": { backgroundColor: themeTransition.golden },
           "100%": { backgroundColor: themeTransition.day },
         },
-        // Sunset: day → evening → dusk → dawn → night (1.7s, lingering golden hour)
+        // Sunset: day → golden → twilight → night (smooth descent)
         sunset: {
           "0%": { backgroundColor: themeTransition.day },
-          "30%": { backgroundColor: themeTransition.evening },
-          "60%": { backgroundColor: themeTransition.dusk },
-          "90%": { backgroundColor: themeTransition.dawn },
+          "30%": { backgroundColor: themeTransition.golden },
+          "60%": { backgroundColor: themeTransition.twilight },
           "100%": { backgroundColor: themeTransition.night },
         },
       },
       animation: {
-        "wash-wave": "wash-wave 500ms ease-out forwards",
-        sunrise: "sunrise 1s cubic-bezier(0.455, 0.19, 0, 0.985) forwards",
-        sunset: "sunset 1.7s cubic-bezier(0.455, 0.19, 0, 0.985) forwards",
+        "wash-wave": "wash-wave 400ms ease-out forwards",
+        sunrise: "sunrise 500ms ease-in-out forwards",
+        sunset: "sunset 600ms ease-in-out forwards",
       },
     },
   },
