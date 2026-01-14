@@ -84,24 +84,26 @@ const { title } = Astro.props;
     outline: none;
   }
 
-  /* Theme transition - 4 phases at 600ms each */
+  /* Theme transition phases */
   :root {
     --phase-duration: 600ms;
+    --shadow-in-duration: 400ms; /* Synced with toggle button animation */
+    --melt-duration: 300ms;
     /* Strong midday shadows - like overhead sun/moon */
-    --text-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --text-shadow-dark: 0 4px 12px rgba(255, 255, 255, 0.3);
-    --box-shadow-light: 0 8px 24px rgba(0, 0, 0, 0.3);
-    --box-shadow-dark: 0 8px 24px rgba(255, 255, 255, 0.2);
+    --text-shadow-light: 0 6px 20px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+    --text-shadow-dark: 0 6px 20px rgba(255, 255, 255, 0.5), 0 2px 8px rgba(255, 255, 255, 0.3);
+    --box-shadow-light: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+    --box-shadow-dark: 0 12px 40px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(255, 255, 255, 0.2);
   }
 
-  /* Phase 1: Shadows appear (midday overhead light) */
+  /* Phase 1: Shadows appear (midday overhead light) - synced with toggle */
   /* Container shadows for project cards and pills/tags */
   html.theme-shadow-in [class*="card"],
   html.theme-shadow-in [class*="Card"],
   html.theme-shadow-in [class*="pill"],
   html.theme-shadow-in [class*="Pill"],
   html.theme-shadow-in [class*="tag"] {
-    transition: box-shadow var(--phase-duration) ease-out !important;
+    transition: box-shadow var(--shadow-in-duration) ease-out !important;
     box-shadow: var(--box-shadow-light);
   }
 
@@ -117,7 +119,7 @@ const { title } = Astro.props;
   html.theme-shadow-in h1,
   html.theme-shadow-in h2,
   html.theme-shadow-in h3 {
-    transition: text-shadow var(--phase-duration) ease-out !important;
+    transition: text-shadow var(--shadow-in-duration) ease-out !important;
     text-shadow: var(--text-shadow-light);
   }
 
@@ -127,13 +129,30 @@ const { title } = Astro.props;
     text-shadow: var(--text-shadow-dark);
   }
 
-  /* Phase 2: Content melts into the page */
+  /* Phase 2a: Content melts into the page - shadows fade as content melts */
   html.theme-melt main {
     transition:
-      opacity var(--phase-duration) ease-in,
-      filter var(--phase-duration) ease-in !important;
+      opacity var(--melt-duration) ease-in,
+      filter var(--melt-duration) ease-in !important;
     opacity: 0;
     filter: blur(16px);
+  }
+
+  /* Shadows fade out during melt */
+  html.theme-melt [class*="card"],
+  html.theme-melt [class*="Card"],
+  html.theme-melt [class*="pill"],
+  html.theme-melt [class*="Pill"],
+  html.theme-melt [class*="tag"] {
+    transition: box-shadow var(--melt-duration) ease-in !important;
+    box-shadow: none;
+  }
+
+  html.theme-melt h1,
+  html.theme-melt h2,
+  html.theme-melt h3 {
+    transition: text-shadow var(--melt-duration) ease-in !important;
+    text-shadow: none;
   }
 
   /* Phase 2b: Hidden during color sweep */
@@ -143,7 +162,7 @@ const { title } = Astro.props;
     visibility: hidden;
   }
 
-  /* Phase 3: Content emerges from the page */
+  /* Phase 3: Content emerges - shadows fade back in */
   html.theme-unmelt main {
     transition:
       opacity var(--phase-duration) ease-out,
@@ -152,12 +171,13 @@ const { title } = Astro.props;
     filter: blur(0);
   }
 
-  /* Keep shadows visible during unmelt */
+  /* Shadows fade in during unmelt */
   html.theme-unmelt [class*="card"],
   html.theme-unmelt [class*="Card"],
   html.theme-unmelt [class*="pill"],
   html.theme-unmelt [class*="Pill"],
   html.theme-unmelt [class*="tag"] {
+    transition: box-shadow var(--phase-duration) ease-out !important;
     box-shadow: var(--box-shadow-light);
   }
 
@@ -172,6 +192,7 @@ const { title } = Astro.props;
   html.theme-unmelt h1,
   html.theme-unmelt h2,
   html.theme-unmelt h3 {
+    transition: text-shadow var(--phase-duration) ease-out !important;
     text-shadow: var(--text-shadow-light);
   }
 
@@ -198,12 +219,11 @@ const { title } = Astro.props;
     text-shadow: none;
   }
 
-  /* Toggle button stays visible throughout */
+  /* Toggle button - JS handles positioning during transition */
   [data-theme-toggle],
   [data-theme-toggle] * {
-    opacity: 1 !important;
-    filter: none !important;
     text-shadow: none !important;
+    box-shadow: none !important;
   }
 
   /* Desktop: color sweep that IS the transition */
@@ -219,18 +239,34 @@ const { title } = Astro.props;
       opacity: 0;
     }
 
-    /* Sunset: dark color sweeps from right to left */
+    /* Sunset: sweeps right to left - day → dusk → evening → night */
     html.theme-sunset::after {
       opacity: 1;
-      background: theme(colors.primary.dark);
-      animation: sweep-left var(--phase-duration) linear forwards;
+      background: linear-gradient(
+        to left,
+        theme(colors.primary.dark) 0%,
+        #1e1b4b 20%,
+        #4c1d95 35%,
+        #be185d 50%,
+        #f97316 70%,
+        transparent 100%
+      );
+      animation: sweep-left var(--melt-duration) ease-out forwards;
     }
 
-    /* Sunrise: light color sweeps from left to right */
+    /* Sunrise: sweeps left to right - night → dawn → morning → day */
     html.theme-sunrise::after {
       opacity: 1;
-      background: theme(colors.primary.light);
-      animation: sweep-right var(--phase-duration) linear forwards;
+      background: linear-gradient(
+        to right,
+        theme(colors.primary.light) 0%,
+        #fcd34d 20%,
+        #fb923c 35%,
+        #f472b6 50%,
+        #a78bfa 70%,
+        transparent 100%
+      );
+      animation: sweep-right var(--melt-duration) ease-out forwards;
     }
   }
 

@@ -1,24 +1,19 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
   import { isDarkTheme, toggleTheme } from "@utils/theme";
 
   let isDark = isDarkTheme();
 
-  const handleVisualToggle = () => (isDark = !isDark);
-  const handleClick = (e: Event) => {
-    e.preventDefault();
-    toggleTheme();
-  };
-
-  if (typeof window !== "undefined") {
-    window.addEventListener("theme-toggle-visual", handleVisualToggle);
+  // Listen for custom event to update visual state (fired during sweep)
+  if (typeof window !== 'undefined') {
+    window.addEventListener('theme-toggle-visual', () => {
+      isDark = !isDark;
+    });
   }
 
-  onDestroy(() => {
-    if (typeof window !== "undefined") {
-      window.removeEventListener("theme-toggle-visual", handleVisualToggle);
-    }
-  });
+  function handleClick(e: Event) {
+    e.preventDefault(); // Prevent immediate checkbox state change
+    toggleTheme();
+  }
 </script>
 
 <label
