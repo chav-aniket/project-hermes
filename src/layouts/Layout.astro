@@ -84,57 +84,49 @@ const { title } = Astro.props;
     outline: none;
   }
 
-  /* Theme transition phases (inspired by jzhao.xyz sunlit) */
-  /* Phase timing variables */
+  /* Theme transition phases - fast with shadow depth effects */
   :root {
-    --melt-duration: 300ms;
-    --reveal-duration: 400ms;
+    --melt-duration: 200ms;
+    --reveal-duration: 250ms;
   }
 
-  /* Phase 1: Melt - components fade to match background */
-  html.theme-melt main,
-  html.theme-melt main * {
-    transition:
-      opacity var(--melt-duration) ease-out,
-      color var(--melt-duration) ease-out,
-      background-color var(--melt-duration) ease-out !important;
-  }
-
+  /* Phase 1: Melt - content sinks into the page with shadows */
   html.theme-melt main {
+    transition:
+      opacity var(--melt-duration) ease-in,
+      filter var(--melt-duration) ease-in,
+      transform var(--melt-duration) ease-in !important;
     opacity: 0;
+    filter: blur(8px);
+    transform: scale(0.98);
   }
 
   /* Phase 2: Hidden during background transition */
   html.theme-hidden main {
     opacity: 0;
+    filter: blur(8px);
+    transform: scale(0.98);
     transition: none !important;
   }
 
-  /* Phase 3: Reveal - components fade back in */
-  html.theme-reveal main,
-  html.theme-reveal main * {
+  /* Phase 3: Reveal - content emerges from the page */
+  html.theme-reveal main {
     transition:
       opacity var(--reveal-duration) ease-out,
-      color var(--reveal-duration) ease-out,
-      background-color var(--reveal-duration) ease-out !important;
-  }
-
-  html.theme-reveal main {
+      filter var(--reveal-duration) ease-out,
+      transform var(--reveal-duration) ease-out !important;
     opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
   }
 
-  /* Toggle button transitions with background (never hidden) */
+  /* Toggle button stays visible and transitions smoothly */
   html.theme-melt [data-theme-toggle],
   html.theme-hidden [data-theme-toggle],
-  html.theme-reveal [data-theme-toggle],
-  html.theme-sunrise [data-theme-toggle],
-  html.theme-sunset [data-theme-toggle] {
+  html.theme-reveal [data-theme-toggle] {
     opacity: 1 !important;
-    transition:
-      color var(--theme-transition),
-      background-color var(--theme-transition),
-      fill var(--theme-transition),
-      stroke var(--theme-transition) !important;
+    filter: none !important;
+    transform: none !important;
   }
 
   /* Desktop: animate background through sunrise/sunset colors */
