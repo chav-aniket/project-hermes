@@ -1,20 +1,24 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
   import { isDarkTheme, toggleTheme } from "@utils/theme";
-  // Theme is initialized in Layout.astro before hydration - we just need
-  // to sync the checkbox state with the current theme
+
   let isDark = isDarkTheme();
 
-  // Listen for custom event to update visual state (fired during sweep)
-  if (typeof window !== 'undefined') {
-    window.addEventListener('theme-toggle-visual', () => {
-      isDark = !isDark;
-    });
+  const handleVisualToggle = () => (isDark = !isDark);
+  const handleClick = (e: Event) => {
+    e.preventDefault();
+    toggleTheme();
+  };
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("theme-toggle-visual", handleVisualToggle);
   }
 
-  function handleClick(e: Event) {
-    e.preventDefault(); // Prevent immediate checkbox state change
-    toggleTheme();
-  }
+  onDestroy(() => {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("theme-toggle-visual", handleVisualToggle);
+    }
+  });
 </script>
 
 <label

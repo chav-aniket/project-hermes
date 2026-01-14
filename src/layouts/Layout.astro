@@ -47,181 +47,110 @@ const { title } = Astro.props;
 </html>
 <style is:global>
   :root {
-    --accent: 124, 58, 237;
-    --accent-gradient: linear-gradient(
-      45deg,
-      rgb(var(--accent)),
-      #da62c4 30%,
-      white 60%
-    );
-    /* Theme colors as CSS variables (inspired by jzhao.xyz sunlit) */
+    /* Theme colors */
     --theme-bg: theme(colors.primary.light);
-    --theme-text: theme(colors.textLight.DEFAULT);
-    --theme-secondary: theme(colors.secondary.light);
     --theme-tertiary: theme(colors.tertiary.light);
-    /* Transition timing for theme changes */
-    --theme-transition: 1s cubic-bezier(0.455, 0.19, 0, 0.985);
+    /* Transition timing */
+    --phase-duration: 600ms;
+    --shadow-in-duration: 400ms;
+    --melt-duration: 300ms;
+    /* Shadows (theme-aware) */
+    --text-shadow: 0 6px 20px rgb(0 0 0 / 0.6), 0 2px 8px rgb(0 0 0 / 0.4);
+    --box-shadow: 0 12px 40px rgb(0 0 0 / 0.5), 0 4px 12px rgb(0 0 0 / 0.3);
   }
 
   html.dark {
     --theme-bg: theme(colors.primary.dark);
-    --theme-text: theme(colors.textDark.DEFAULT);
-    --theme-secondary: theme(colors.secondary.dark);
     --theme-tertiary: theme(colors.tertiary.dark);
-    --theme-transition: 1.7s cubic-bezier(0.455, 0.19, 0, 0.985);
+    --text-shadow: 0 6px 20px rgb(255 255 255 / 0.5), 0 2px 8px rgb(255 255 255 / 0.3);
+    --box-shadow: 0 12px 40px rgb(255 255 255 / 0.4), 0 4px 12px rgb(255 255 255 / 0.2);
   }
 
   html {
     font-family: "JetBrains Mono", monospace;
     background-color: var(--theme-bg);
-    @apply relative;
+    position: relative;
     box-sizing: border-box;
-    text-decoration: none;
   }
 
-  a:focus,
-  input:focus {
+  :is(a, input):focus {
     outline: none;
   }
 
-  /* Theme transition phases */
-  :root {
-    --phase-duration: 600ms;
-    --shadow-in-duration: 400ms; /* Synced with toggle button animation */
-    --melt-duration: 300ms;
-    /* Strong midday shadows - like overhead sun/moon */
-    --text-shadow-light: 0 6px 20px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
-    --text-shadow-dark: 0 6px 20px rgba(255, 255, 255, 0.5), 0 2px 8px rgba(255, 255, 255, 0.3);
-    --box-shadow-light: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
-    --box-shadow-dark: 0 12px 40px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(255, 255, 255, 0.2);
+  /* Shared selectors */
+  html:is(.theme-shadow-in, .theme-unmelt) :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
+    box-shadow: var(--box-shadow);
   }
 
-  /* Phase 1: Shadows appear (midday overhead light) - synced with toggle */
-  /* Container shadows for project cards and pills/tags */
-  html.theme-shadow-in [class*="card"],
-  html.theme-shadow-in [class*="Card"],
-  html.theme-shadow-in [class*="pill"],
-  html.theme-shadow-in [class*="Pill"],
-  html.theme-shadow-in [class*="tag"] {
+  html:is(.theme-shadow-in, .theme-unmelt) :is(h1, h2, h3) {
+    text-shadow: var(--text-shadow);
+  }
+
+  html:is(.theme-melt, .theme-shadow-out) :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
+    box-shadow: none;
+  }
+
+  html:is(.theme-melt, .theme-shadow-out) :is(h1, h2, h3) {
+    text-shadow: none;
+  }
+
+  /* Phase 1: Shadows appear */
+  html.theme-shadow-in :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
     transition: box-shadow var(--shadow-in-duration) ease-out !important;
-    box-shadow: var(--box-shadow-light);
   }
 
-  html.dark.theme-shadow-in [class*="card"],
-  html.dark.theme-shadow-in [class*="Card"],
-  html.dark.theme-shadow-in [class*="pill"],
-  html.dark.theme-shadow-in [class*="Pill"],
-  html.dark.theme-shadow-in [class*="tag"] {
-    box-shadow: var(--box-shadow-dark);
-  }
-
-  /* Text shadows for main headings */
-  html.theme-shadow-in h1,
-  html.theme-shadow-in h2,
-  html.theme-shadow-in h3 {
+  html.theme-shadow-in :is(h1, h2, h3) {
     transition: text-shadow var(--shadow-in-duration) ease-out !important;
-    text-shadow: var(--text-shadow-light);
   }
 
-  html.dark.theme-shadow-in h1,
-  html.dark.theme-shadow-in h2,
-  html.dark.theme-shadow-in h3 {
-    text-shadow: var(--text-shadow-dark);
-  }
-
-  /* Phase 2a: Content melts into the page - shadows fade as content melts */
+  /* Phase 2a: Content melts */
   html.theme-melt main {
-    transition:
-      opacity var(--melt-duration) ease-in,
-      filter var(--melt-duration) ease-in !important;
+    transition: opacity var(--melt-duration) ease-in, filter var(--melt-duration) ease-in !important;
     opacity: 0;
     filter: blur(16px);
   }
 
-  /* Shadows fade out during melt */
-  html.theme-melt [class*="card"],
-  html.theme-melt [class*="Card"],
-  html.theme-melt [class*="pill"],
-  html.theme-melt [class*="Pill"],
-  html.theme-melt [class*="tag"] {
+  html.theme-melt :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
     transition: box-shadow var(--melt-duration) ease-in !important;
-    box-shadow: none;
   }
 
-  html.theme-melt h1,
-  html.theme-melt h2,
-  html.theme-melt h3 {
+  html.theme-melt :is(h1, h2, h3) {
     transition: text-shadow var(--melt-duration) ease-in !important;
-    text-shadow: none;
   }
 
-  /* Phase 2b: Hidden during color sweep */
+  /* Phase 2b: Hidden during sweep */
   html.theme-hidden main {
     opacity: 0;
     filter: blur(16px);
     visibility: hidden;
   }
 
-  /* Phase 3: Content emerges - shadows fade back in */
+  /* Phase 3: Content emerges */
   html.theme-unmelt main {
-    transition:
-      opacity var(--phase-duration) ease-out,
-      filter var(--phase-duration) ease-out !important;
+    transition: opacity var(--phase-duration) ease-out, filter var(--phase-duration) ease-out !important;
     opacity: 1;
     filter: blur(0);
   }
 
-  /* Shadows fade in during unmelt */
-  html.theme-unmelt [class*="card"],
-  html.theme-unmelt [class*="Card"],
-  html.theme-unmelt [class*="pill"],
-  html.theme-unmelt [class*="Pill"],
-  html.theme-unmelt [class*="tag"] {
+  html.theme-unmelt :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
     transition: box-shadow var(--phase-duration) ease-out !important;
-    box-shadow: var(--box-shadow-light);
   }
 
-  html.dark.theme-unmelt [class*="card"],
-  html.dark.theme-unmelt [class*="Card"],
-  html.dark.theme-unmelt [class*="pill"],
-  html.dark.theme-unmelt [class*="Pill"],
-  html.dark.theme-unmelt [class*="tag"] {
-    box-shadow: var(--box-shadow-dark);
-  }
-
-  html.theme-unmelt h1,
-  html.theme-unmelt h2,
-  html.theme-unmelt h3 {
+  html.theme-unmelt :is(h1, h2, h3) {
     transition: text-shadow var(--phase-duration) ease-out !important;
-    text-shadow: var(--text-shadow-light);
-  }
-
-  html.dark.theme-unmelt h1,
-  html.dark.theme-unmelt h2,
-  html.dark.theme-unmelt h3 {
-    text-shadow: var(--text-shadow-dark);
   }
 
   /* Phase 4: Shadows recede */
-  html.theme-shadow-out [class*="card"],
-  html.theme-shadow-out [class*="Card"],
-  html.theme-shadow-out [class*="pill"],
-  html.theme-shadow-out [class*="Pill"],
-  html.theme-shadow-out [class*="tag"] {
+  html.theme-shadow-out :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
     transition: box-shadow var(--phase-duration) ease-in !important;
-    box-shadow: none;
   }
 
-  html.theme-shadow-out h1,
-  html.theme-shadow-out h2,
-  html.theme-shadow-out h3 {
+  html.theme-shadow-out :is(h1, h2, h3) {
     transition: text-shadow var(--phase-duration) ease-in !important;
-    text-shadow: none;
   }
 
-  /* Toggle button - JS handles positioning during transition */
-  [data-theme-toggle],
-  [data-theme-toggle] * {
+  /* Toggle excluded from shadows */
+  [data-theme-toggle], [data-theme-toggle] * {
     text-shadow: none !important;
     box-shadow: none !important;
   }
@@ -270,57 +199,44 @@ const { title } = Astro.props;
     }
   }
 
-  /* Sweep from right edge to left edge */
   @keyframes sweep-left {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(0%);
-    }
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
   }
 
-  /* Sweep from left edge to right edge */
   @keyframes sweep-right {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(0%);
-    }
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+
+  @keyframes wash-wave {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
   }
 
   /* Mobile: wave overlay for iOS status bar sync */
   @media (max-width: 767px) {
     html::before {
       content: "";
-      @apply fixed pointer-events-none z-[9999] bg-primary-dark;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: auto;
+      position: fixed;
+      inset: 0 0 auto 0;
       height: 120vh;
+      background: theme(colors.primary.dark);
       transform: translateY(-100%);
+      pointer-events: none;
+      z-index: 9999;
       clip-path: polygon(
-        0% 0%,
-        100% 0%,
-        100% 85%,
-        90% 88%,
-        75% 85%,
-        60% 90%,
-        45% 85%,
-        30% 90%,
-        15% 85%,
-        0% 88%
+        0% 0%, 100% 0%, 100% 85%, 90% 88%, 75% 85%,
+        60% 90%, 45% 85%, 30% 90%, 15% 85%, 0% 88%
       );
     }
 
     html.dark::before {
-      @apply bg-primary-light;
+      background: theme(colors.primary.light);
     }
 
     html.theme-wave::before {
-      @apply animate-wash-wave;
+      animation: wash-wave 600ms ease-out forwards;
     }
   }
 
