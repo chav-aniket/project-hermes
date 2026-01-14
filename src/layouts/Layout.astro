@@ -54,10 +54,27 @@ const { title } = Astro.props;
       #da62c4 30%,
       white 60%
     );
+    /* Theme colors as CSS variables (inspired by jzhao.xyz sunlit) */
+    --theme-bg: theme(colors.primary.light);
+    --theme-text: theme(colors.textLight.DEFAULT);
+    --theme-secondary: theme(colors.secondary.light);
+    --theme-tertiary: theme(colors.tertiary.light);
+    /* Transition timing for theme changes */
+    --theme-transition: 1s cubic-bezier(0.455, 0.19, 0, 0.985);
   }
+
+  html.dark {
+    --theme-bg: theme(colors.primary.dark);
+    --theme-text: theme(colors.textDark.DEFAULT);
+    --theme-secondary: theme(colors.secondary.dark);
+    --theme-tertiary: theme(colors.tertiary.dark);
+    --theme-transition: 1.7s cubic-bezier(0.455, 0.19, 0, 0.985);
+  }
+
   html {
     font-family: "JetBrains Mono", monospace;
-    @apply bg-primary-light relative;
+    background-color: var(--theme-bg);
+    @apply relative;
     box-sizing: border-box;
     text-decoration: none;
   }
@@ -67,27 +84,80 @@ const { title } = Astro.props;
     outline: none;
   }
 
-  html.dark {
-    @apply bg-primary-dark;
+  /* Theme transition phases (inspired by jzhao.xyz sunlit) */
+  /* Phase timing variables */
+  :root {
+    --melt-duration: 300ms;
+    --reveal-duration: 400ms;
   }
 
-  /* Theme transition overlay - covers everything during animation */
-  html::before {
-    content: "";
-    @apply fixed inset-0 pointer-events-none z-[9999];
+  /* Phase 1: Melt - components fade to match background */
+  html.theme-melt main,
+  html.theme-melt main * {
+    transition:
+      opacity var(--melt-duration) ease-out,
+      color var(--melt-duration) ease-out,
+      background-color var(--melt-duration) ease-out !important;
+  }
+
+  html.theme-melt main {
     opacity: 0;
   }
 
-  /* Mobile: wave shape from top */
+  /* Phase 2: Hidden during background transition */
+  html.theme-hidden main {
+    opacity: 0;
+    transition: none !important;
+  }
+
+  /* Phase 3: Reveal - components fade back in */
+  html.theme-reveal main,
+  html.theme-reveal main * {
+    transition:
+      opacity var(--reveal-duration) ease-out,
+      color var(--reveal-duration) ease-out,
+      background-color var(--reveal-duration) ease-out !important;
+  }
+
+  html.theme-reveal main {
+    opacity: 1;
+  }
+
+  /* Toggle button transitions with background (never hidden) */
+  html.theme-melt [data-theme-toggle],
+  html.theme-hidden [data-theme-toggle],
+  html.theme-reveal [data-theme-toggle],
+  html.theme-sunrise [data-theme-toggle],
+  html.theme-sunset [data-theme-toggle] {
+    opacity: 1 !important;
+    transition:
+      color var(--theme-transition),
+      background-color var(--theme-transition),
+      fill var(--theme-transition),
+      stroke var(--theme-transition) !important;
+  }
+
+  /* Desktop: animate background through sunrise/sunset colors */
+  @media (min-width: 768px) {
+    html.theme-sunrise {
+      @apply animate-sunrise;
+    }
+
+    html.theme-sunset {
+      @apply animate-sunset;
+    }
+  }
+
+  /* Mobile: wave overlay for iOS status bar sync */
   @media (max-width: 767px) {
     html::before {
-      @apply bg-primary-dark;
+      content: "";
+      @apply fixed pointer-events-none z-[9999] bg-primary-dark;
       top: 0;
       left: 0;
       right: 0;
       bottom: auto;
       height: 120vh;
-      opacity: 1;
       transform: translateY(-100%);
       clip-path: polygon(
         0% 0%,
@@ -112,21 +182,6 @@ const { title } = Astro.props;
     }
   }
 
-  /* Desktop: full-screen overlay with sunrise/sunset color animation */
-  @media (min-width: 768px) {
-    html.theme-sunrise::before,
-    html.theme-sunset::before {
-      opacity: 1;
-    }
-
-    html.theme-sunrise::before {
-      @apply animate-sunrise;
-    }
-
-    html.theme-sunset::before {
-      @apply animate-sunset;
-    }
-  }
   code {
     font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
       DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
@@ -151,9 +206,6 @@ const { title } = Astro.props;
     @apply transition-colors duration-300;
   }
   .hover-glow:hover {
-    @apply bg-tertiary-light;
-  }
-  html.dark .hover-glow:hover {
-    @apply bg-tertiary-dark;
+    background-color: var(--theme-tertiary);
   }
 </style>

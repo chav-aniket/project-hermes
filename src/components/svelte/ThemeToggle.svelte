@@ -6,6 +6,7 @@
 </script>
 
 <label
+  data-theme-toggle
   class="
         switch
         relative inline-block h-4 w-4 sm:h-9 sm:w-20
