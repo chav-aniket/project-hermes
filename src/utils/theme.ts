@@ -49,7 +49,7 @@ export const setDark = () => {
 };
 
 // Animation durations (must match CSS --phase-duration)
-const PHASE_DURATION = 400;
+const PHASE_DURATION = 600;
 const MOBILE_BREAKPOINT = 768;
 
 const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
@@ -77,18 +77,18 @@ export const toggleTheme = () => {
       html.classList.remove("theme-wave");
     }, PHASE_DURATION);
   } else {
-    // Desktop: 4-phase transition
-    // Phase 1: Shadows appear (400ms)
-    // Phase 2: Content melts + colors transition (400ms)
-    // Phase 3: Content unmelts (400ms)
-    // Phase 4: Shadows disappear (400ms)
+    // Desktop: 4-phase transition (600ms each = 2.4s total)
+    // Phase 1: Strong midday shadows appear
+    // Phase 2: Content melts + color sweep across page
+    // Phase 3: Content emerges
+    // Phase 4: Shadows recede
     const animationClass = goingDark ? "theme-sunset" : "theme-sunrise";
 
     // Phase 1: Shadows appear
     html.classList.add("theme-shadow-in");
 
     setTimeout(() => {
-      // Phase 2: Melt + color transition + theme switch
+      // Phase 2: Melt + color sweep + theme switch
       html.classList.remove("theme-shadow-in");
       html.classList.add("theme-melt", animationClass);
       html.classList.toggle("dark", goingDark);

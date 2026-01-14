@@ -84,63 +84,69 @@ const { title } = Astro.props;
     outline: none;
   }
 
-  /* Theme transition - 4 phases at 400ms each */
+  /* Theme transition - 4 phases at 600ms each */
   :root {
-    --phase-duration: 400ms;
+    --phase-duration: 600ms;
+    /* Strong midday shadows - like overhead sun/moon */
+    --shadow-light:
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 8px 16px rgba(0, 0, 0, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-dark:
+      0 20px 40px rgba(255, 255, 255, 0.25),
+      0 8px 16px rgba(255, 255, 255, 0.2),
+      0 2px 4px rgba(255, 255, 255, 0.15);
   }
 
-  /* Phase 1: Shadows appear on content */
+  /* Phase 1: Strong midday shadows appear */
   html.theme-shadow-in main {
-    transition: filter var(--phase-duration) ease-out !important;
-    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3))
-      drop-shadow(0 8px 40px rgba(0, 0, 0, 0.2));
+    transition: box-shadow var(--phase-duration) ease-out !important;
+    box-shadow: var(--shadow-light);
   }
 
   html.dark.theme-shadow-in main {
-    filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.15))
-      drop-shadow(0 8px 40px rgba(255, 255, 255, 0.1));
+    box-shadow: var(--shadow-dark);
   }
 
-  /* Phase 2: Content melts (with shadows still visible) */
+  /* Phase 2: Content melts into the page */
   html.theme-melt main {
     transition:
       opacity var(--phase-duration) ease-in,
-      filter var(--phase-duration) ease-in,
-      transform var(--phase-duration) ease-in !important;
+      filter var(--phase-duration) ease-in !important;
     opacity: 0;
-    filter: blur(12px) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
-    transform: scale(0.97);
+    filter: blur(16px);
+    box-shadow: var(--shadow-light);
+  }
+
+  html.dark.theme-melt main {
+    box-shadow: var(--shadow-dark);
   }
 
   /* Phase 2b: Hidden during color transition */
   html.theme-hidden main {
     opacity: 0;
-    filter: blur(12px);
-    transform: scale(0.97);
-    transition: none !important;
+    filter: blur(16px);
+    visibility: hidden;
   }
 
-  /* Phase 3: Content unmelts (shadows still present) */
+  /* Phase 3: Content emerges from the page */
   html.theme-unmelt main {
     transition:
       opacity var(--phase-duration) ease-out,
-      filter var(--phase-duration) ease-out,
-      transform var(--phase-duration) ease-out !important;
+      filter var(--phase-duration) ease-out !important;
     opacity: 1;
-    filter: blur(0) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3))
-      drop-shadow(0 8px 40px rgba(0, 0, 0, 0.2));
-    transform: scale(1);
+    filter: blur(0);
+    box-shadow: var(--shadow-light);
   }
 
   html.dark.theme-unmelt main {
-    filter: blur(0) drop-shadow(0 4px 20px rgba(255, 255, 255, 0.15))
-      drop-shadow(0 8px 40px rgba(255, 255, 255, 0.1));
+    box-shadow: var(--shadow-dark);
   }
 
-  /* Phase 4: Shadows fade away */
+  /* Phase 4: Shadows recede */
   html.theme-shadow-out main {
-    transition: filter var(--phase-duration) ease-in !important;
-    filter: none;
+    transition: box-shadow var(--phase-duration) ease-in !important;
+    box-shadow: none;
   }
 
   /* Toggle button stays visible throughout */
@@ -151,56 +157,67 @@ const { title } = Astro.props;
   html.theme-shadow-out [data-theme-toggle] {
     opacity: 1 !important;
     filter: none !important;
-    transform: none !important;
+    box-shadow: none !important;
   }
 
-  /* Desktop: gradient sweep across page */
+  /* Desktop: color sweep across page during melt phase */
   @media (min-width: 768px) {
     html::after {
       content: "";
-      @apply fixed inset-0 pointer-events-none z-[9998];
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10000;
       transform: translateX(-100%);
+      opacity: 0;
     }
 
-    /* Sunrise: sweeps left to right (east) - warm colors */
+    /* Sunrise: warm sweep left to right (east) */
     html.theme-sunrise::after {
+      opacity: 1;
       background: linear-gradient(
         90deg,
         theme(colors.primary.light) 0%,
-        theme(colors.primary.light) 60%,
-        transparent 100%
+        theme(colors.primary.light) 40%,
+        rgba(249, 180, 100, 0.9) 50%,
+        transparent 60%
       );
-      animation: sweep-right var(--phase-duration) ease-in-out forwards;
+      animation: sweep-east var(--phase-duration) ease-in-out forwards;
     }
 
-    /* Sunset: sweeps right to left (west) - cool colors */
+    /* Sunset: cool sweep right to left (west) */
     html.theme-sunset::after {
+      opacity: 1;
       background: linear-gradient(
         -90deg,
         theme(colors.primary.dark) 0%,
-        theme(colors.primary.dark) 60%,
-        transparent 100%
+        theme(colors.primary.dark) 40%,
+        rgba(71, 85, 105, 0.9) 50%,
+        transparent 60%
       );
       transform: translateX(100%);
-      animation: sweep-left var(--phase-duration) ease-in-out forwards;
+      animation: sweep-west var(--phase-duration) ease-in-out forwards;
     }
   }
 
-  @keyframes sweep-right {
-    0% {
+  @keyframes sweep-east {
+    from {
       transform: translateX(-100%);
     }
-    100% {
-      transform: translateX(100%);
+    to {
+      transform: translateX(50%);
     }
   }
 
-  @keyframes sweep-left {
-    0% {
+  @keyframes sweep-west {
+    from {
       transform: translateX(100%);
     }
-    100% {
-      transform: translateX(-100%);
+    to {
+      transform: translateX(-50%);
     }
   }
 

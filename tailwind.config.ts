@@ -42,7 +42,7 @@ export default {
         },
       },
       animation: {
-        "wash-wave": "wash-wave 400ms ease-out forwards",
+        "wash-wave": "wash-wave 600ms ease-out forwards",
       },
     },
   },
