@@ -39,6 +39,28 @@ const { title } = Astro.props;
     {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
   </head>
   <body>
+    <!-- Hidden SVG for mobile wave clip path and mask -->
+    <svg width="0" height="0" class="absolute" aria-hidden="true">
+      <defs>
+        <clipPath id="wave-clip" clipPathUnits="objectBoundingBox">
+          <path d="M0,0 L1,0 L1,0.82
+                   C0.917,0.88 0.833,0.92 0.75,0.85
+                   C0.667,0.78 0.583,0.82 0.5,0.88
+                   C0.417,0.94 0.333,0.82 0.25,0.85
+                   C0.167,0.88 0.083,0.92 0,0.85 Z"/>
+        </clipPath>
+        <!-- Mask for reveal animation (white=visible, black=hidden) -->
+        <mask id="wave-mask" maskContentUnits="objectBoundingBox">
+          <rect fill="white" width="1" height="1"/>
+          <path fill="black" d="M0,0.82
+                   C0.083,0.88 0.167,0.92 0.25,0.85
+                   C0.333,0.78 0.417,0.82 0.5,0.88
+                   C0.583,0.94 0.667,0.82 0.75,0.85
+                   C0.833,0.88 0.917,0.92 1,0.85
+                   L1,1 L0,1 Z"/>
+        </mask>
+      </defs>
+    </svg>
     <main>
       <slot />
     </main>
@@ -155,88 +177,28 @@ const { title } = Astro.props;
     box-shadow: none !important;
   }
 
-  /* Desktop: color sweep that IS the transition */
+  /* Desktop: radial wave overlay (created by JS) */
   @media (min-width: 768px) {
-    html::after {
-      content: "";
+    #theme-reveal-overlay {
       position: fixed;
-      top: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
+      overflow: hidden;
+      z-index: 9998;
       pointer-events: none;
-      z-index: 9997;
-      opacity: 0;
-    }
-
-    /* Sunset: sweeps right to left - day → dusk → evening → night */
-    html.theme-sunset::after {
-      opacity: 1;
-      background: linear-gradient(
-        to left,
-        theme(colors.primary.dark) 0%,
-        #1e1b4b 20%,
-        #4c1d95 35%,
-        #be185d 50%,
-        #f97316 70%,
-        transparent 100%
-      );
-      animation: sweep-left var(--melt-duration) ease-out forwards;
-    }
-
-    /* Sunrise: sweeps left to right - night → dawn → morning → day */
-    html.theme-sunrise::after {
-      opacity: 1;
-      background: linear-gradient(
-        to right,
-        theme(colors.primary.light) 0%,
-        #fcd34d 20%,
-        #fb923c 35%,
-        #f472b6 50%,
-        #a78bfa 70%,
-        transparent 100%
-      );
-      animation: sweep-right var(--melt-duration) ease-out forwards;
     }
   }
 
-  @keyframes sweep-left {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
-  }
-
-  @keyframes sweep-right {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
-  }
-
-  @keyframes wash-wave {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(0); }
-  }
-
-  /* Mobile: wave overlay for iOS status bar sync */
+  /* Mobile: wave reveal effect */
   @media (max-width: 767px) {
-    html::before {
-      content: "";
+    /* Theme reveal overlay (cloned content with new theme) */
+    /* JS animates clip-path directly for wave-shaped reveal */
+    #theme-reveal-overlay {
       position: fixed;
-      inset: 0 0 auto 0;
-      height: 120vh;
-      background: theme(colors.primary.dark);
-      transform: translateY(-100%);
+      inset: 0;
+      overflow: hidden;
+      z-index: 9998;
       pointer-events: none;
-      z-index: 9999;
-      clip-path: polygon(
-        0% 0%, 100% 0%, 100% 85%, 90% 88%, 75% 85%,
-        60% 90%, 45% 85%, 30% 90%, 15% 85%, 0% 88%
-      );
-    }
-
-    html.dark::before {
-      background: theme(colors.primary.light);
-    }
-
-    html.theme-wave::before {
-      animation: wash-wave 600ms ease-out forwards;
+      background: var(--theme-bg);
     }
   }
 
