@@ -177,27 +177,19 @@ const { title } = Astro.props;
     box-shadow: none !important;
   }
 
-  /* Desktop: radial wave overlay (created by JS) */
-  @media (min-width: 768px) {
-    #theme-reveal-overlay {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-      z-index: 9998;
-      pointer-events: none;
-    }
+  /* Theme reveal overlay (cloned content for wave animation) */
+  /* JS animates clip-path directly for wave-shaped reveal */
+  #theme-reveal-overlay {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 9998;
+    pointer-events: none;
   }
 
-  /* Mobile: wave reveal effect */
+  /* Mobile: add background color */
   @media (max-width: 767px) {
-    /* Theme reveal overlay (cloned content with new theme) */
-    /* JS animates clip-path directly for wave-shaped reveal */
     #theme-reveal-overlay {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-      z-index: 9998;
-      pointer-events: none;
       background: var(--theme-bg);
     }
   }
