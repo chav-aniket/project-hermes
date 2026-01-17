@@ -62,7 +62,107 @@ const SHADOW_IN_DURATION = 400; // Faster to sync with toggle button animation (
 const PAUSE_DURATION = 250; // Pause between steps for audience to catch up
 const MOBILE_BREAKPOINT = 768;
 
+// Wave animation constants
+const WAVE_AMPLITUDE = 3;
+const WAVE_STEP = 5;
+const ARC_RADIUS = 150;
+const ARC_STEP = 10;
+
 const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
+
+/**
+ * Creates a theme overlay with a frozen snapshot of the current page.
+ * Used to show the "old" theme while the real page switches underneath.
+ */
+function createThemeOverlay(goingDark: boolean): HTMLElement {
+  // Capture computed styles from ORIGINAL elements (must be in DOM for getComputedStyle to work)
+  // Exclude scripts and overlay so indices match after we remove them from clone
+  const originalElements = Array.from(
+    document.body.querySelectorAll("*:not(script):not(#theme-reveal-overlay)")
+  );
+  const styleMap = new Map<number, CSSStyleDeclaration>();
+  originalElements.forEach((el, i) => {
+    if (el instanceof HTMLElement) {
+      styleMap.set(i, getComputedStyle(el));
+    }
+  });
+  const bodyComputed = getComputedStyle(document.body);
+
+  // Clone the body
+  const bodyClone = document.body.cloneNode(true) as HTMLElement;
+  bodyClone
+    .querySelectorAll("script, #theme-reveal-overlay")
+    .forEach((el) => el.remove());
+
+  // Apply captured styles to clone elements (by index - now matches since we excluded same elements)
+  const cloneElements = Array.from(bodyClone.querySelectorAll("*"));
+  cloneElements.forEach((el, i) => {
+    if (styleMap.has(i)) {
+      const computed = styleMap.get(i)!;
+      if (el instanceof HTMLElement) {
+        el.style.color = computed.color;
+        el.style.backgroundColor = computed.backgroundColor;
+        el.style.borderTopColor = computed.borderTopColor;
+        el.style.borderRightColor = computed.borderRightColor;
+        el.style.borderBottomColor = computed.borderBottomColor;
+        el.style.borderLeftColor = computed.borderLeftColor;
+        el.style.outlineColor = computed.outlineColor;
+      }
+    }
+    // Handle SVG elements separately (SVGElement is not HTMLElement, so styleMap won't have them)
+    // Map Tailwind fill classes to actual colors (getComputedStyle().fill is unreliable)
+    if (el instanceof SVGElement) {
+      const classes = el.getAttribute("class") || "";
+      const isDark = document.documentElement.classList.contains("dark");
+
+      // Find fill class and map to actual color value
+      let fillColor: string | null = null;
+      for (const [fillClass, colors] of Object.entries(FILL_CLASS_MAP)) {
+        if (classes.includes(fillClass)) {
+          fillColor = isDark ? colors.dark : colors.light;
+          break;
+        }
+      }
+
+      if (fillColor) {
+        // Set fill on this element
+        el.style.setProperty("fill", fillColor, "important");
+        // Also set fill on all child shape elements (path, circle, rect, etc.)
+        el.querySelectorAll("path, circle, rect, polygon, ellipse, line, polyline").forEach(child => {
+          (child as SVGElement).style.setProperty("fill", fillColor!, "important");
+        });
+      }
+
+      // Remove theme-reactive classes so they don't override our inline style
+      const filteredClasses = classes
+        .split(" ")
+        .filter(c => !c.includes("fill-") && !c.startsWith("dark:"))
+        .join(" ");
+      el.setAttribute("class", filteredClasses);
+    }
+  });
+
+  // Freeze body clone colors
+  bodyClone.style.color = bodyComputed.color;
+  bodyClone.style.backgroundColor = bodyComputed.backgroundColor;
+
+  // Create overlay with OLD theme background
+  const overlay = document.createElement("div");
+  overlay.id = "theme-reveal-overlay";
+  overlay.style.backgroundColor = goingDark
+    ? THEME_COLORS.light
+    : THEME_COLORS.dark;
+
+  // Position clone at 0,0 (full body clone)
+  bodyClone.style.position = "absolute";
+  bodyClone.style.top = "0";
+  bodyClone.style.left = "0";
+  bodyClone.style.width = "100%";
+  bodyClone.style.margin = "0";
+  overlay.appendChild(bodyClone);
+
+  return overlay;
+}
 
 
 export const toggleTheme = () => {
@@ -87,92 +187,8 @@ export const toggleTheme = () => {
     // Remove any existing overlay
     document.getElementById("theme-reveal-overlay")?.remove();
 
-    // Capture computed styles from ORIGINAL elements (must be in DOM for getComputedStyle to work)
-    // Exclude scripts and overlay so indices match after we remove them from clone
-    const originalElements = Array.from(
-      document.body.querySelectorAll("*:not(script):not(#theme-reveal-overlay)")
-    );
-    const styleMap = new Map<number, CSSStyleDeclaration>();
-    originalElements.forEach((el, i) => {
-      if (el instanceof HTMLElement) {
-        styleMap.set(i, getComputedStyle(el));
-      }
-    });
-    const bodyComputed = getComputedStyle(document.body);
-
-    // Now clone the body
-    const bodyClone = document.body.cloneNode(true) as HTMLElement;
-    bodyClone
-      .querySelectorAll("script, #theme-reveal-overlay")
-      .forEach((el) => el.remove());
-
-    // Apply captured styles to clone elements (by index - now matches since we excluded same elements)
-    const cloneElements = Array.from(bodyClone.querySelectorAll("*"));
-    cloneElements.forEach((el, i) => {
-      if (styleMap.has(i)) {
-        const computed = styleMap.get(i)!;
-        if (el instanceof HTMLElement) {
-          el.style.color = computed.color;
-          el.style.backgroundColor = computed.backgroundColor;
-          el.style.borderTopColor = computed.borderTopColor;
-          el.style.borderRightColor = computed.borderRightColor;
-          el.style.borderBottomColor = computed.borderBottomColor;
-          el.style.borderLeftColor = computed.borderLeftColor;
-          el.style.outlineColor = computed.outlineColor;
-        }
-      }
-      // Handle SVG elements separately (SVGElement is not HTMLElement, so styleMap won't have them)
-      // Map Tailwind fill classes to actual colors (getComputedStyle().fill is unreliable)
-      if (el instanceof SVGElement) {
-        const classes = el.getAttribute("class") || "";
-        const isDark = document.documentElement.classList.contains("dark");
-
-        // Find fill class and map to actual color value
-        let fillColor: string | null = null;
-        for (const [fillClass, colors] of Object.entries(FILL_CLASS_MAP)) {
-          if (classes.includes(fillClass)) {
-            fillColor = isDark ? colors.dark : colors.light;
-            break;
-          }
-        }
-
-        if (fillColor) {
-          // Set fill on this element
-          el.style.setProperty("fill", fillColor, "important");
-          // Also set fill on all child shape elements (path, circle, rect, etc.)
-          el.querySelectorAll("path, circle, rect, polygon, ellipse, line, polyline").forEach(child => {
-            (child as SVGElement).style.setProperty("fill", fillColor!, "important");
-          });
-        }
-
-        // Remove theme-reactive classes so they don't override our inline style
-        const filteredClasses = classes
-          .split(" ")
-          .filter(c => !c.includes("fill-") && !c.startsWith("dark:"))
-          .join(" ");
-        el.setAttribute("class", filteredClasses);
-      }
-    });
-
-    // Also freeze body clone itself
-    bodyClone.style.color = bodyComputed.color;
-    bodyClone.style.backgroundColor = bodyComputed.backgroundColor;
-
-    // Create overlay with OLD theme background
-    const overlay = document.createElement("div");
-    overlay.id = "theme-reveal-overlay";
-    overlay.style.backgroundColor = goingDark
-      ? THEME_COLORS.light
-      : THEME_COLORS.dark;
-
-    // Position clone at 0,0 (full body clone)
-    bodyClone.style.position = "absolute";
-    bodyClone.style.top = "0";
-    bodyClone.style.left = "0";
-    bodyClone.style.width = "100%";
-    bodyClone.style.margin = "0";
-    overlay.appendChild(bodyClone);
-
+    // Create overlay with frozen snapshot of current theme
+    const overlay = createThemeOverlay(goingDark);
     document.body.appendChild(overlay);
 
     // Toggle real theme IMMEDIATELY (page now has new colors underneath)
@@ -182,7 +198,6 @@ export const toggleTheme = () => {
     // Animate clip-path: overlay shrinks from TOP, revealing new theme
     const duration = PHASE_DURATION;
     const startTime = performance.now();
-    const amplitude = 3;
 
     const animateClip = (now: number) => {
       const elapsed = now - startTime;
@@ -194,8 +209,8 @@ export const toggleTheme = () => {
 
       // Polygon: area BELOW wave (old theme still visible there)
       const points: string[] = [];
-      for (let x = 0; x <= 100; x += 5) {
-        const wave = Math.sin((x / 100) * Math.PI * 4) * amplitude;
+      for (let x = 0; x <= 100; x += WAVE_STEP) {
+        const wave = Math.sin((x / 100) * Math.PI * 4) * WAVE_AMPLITUDE;
         points.push(`${x}% ${waveY + wave}%`);
       }
       points.push("100% 100%", "0% 100%");
@@ -249,96 +264,8 @@ export const toggleTheme = () => {
             // Remove any existing overlay
             document.getElementById("theme-reveal-overlay")?.remove();
 
-            // Capture computed styles from ORIGINAL elements
-            const originalElements = Array.from(
-              document.body.querySelectorAll("*:not(script):not(#theme-reveal-overlay)")
-            );
-            const styleMap = new Map<number, CSSStyleDeclaration>();
-            originalElements.forEach((el, i) => {
-              if (el instanceof HTMLElement) {
-                styleMap.set(i, getComputedStyle(el));
-              }
-            });
-            const bodyComputed = getComputedStyle(document.body);
-
-            // Clone the body
-            const bodyClone = document.body.cloneNode(true) as HTMLElement;
-            bodyClone
-              .querySelectorAll("script, #theme-reveal-overlay")
-              .forEach((el) => el.remove());
-
-            // Apply captured styles to clone elements
-            const cloneElements = Array.from(bodyClone.querySelectorAll("*"));
-            cloneElements.forEach((el, i) => {
-              if (styleMap.has(i)) {
-                const computed = styleMap.get(i)!;
-                if (el instanceof HTMLElement) {
-                  el.style.color = computed.color;
-                  el.style.backgroundColor = computed.backgroundColor;
-                  el.style.borderTopColor = computed.borderTopColor;
-                  el.style.borderRightColor = computed.borderRightColor;
-                  el.style.borderBottomColor = computed.borderBottomColor;
-                  el.style.borderLeftColor = computed.borderLeftColor;
-                  el.style.outlineColor = computed.outlineColor;
-                }
-              }
-              // Handle SVG elements separately (SVGElement is not HTMLElement, so styleMap won't have them)
-              // Map Tailwind fill classes to actual colors (getComputedStyle().fill is unreliable)
-              if (el instanceof SVGElement) {
-                const classes = el.getAttribute("class") || "";
-                const isDark = document.documentElement.classList.contains("dark");
-
-                // Find fill class and map to actual color value
-                let fillColor: string | null = null;
-                for (const [fillClass, colors] of Object.entries(FILL_CLASS_MAP)) {
-                  if (classes.includes(fillClass)) {
-                    fillColor = isDark ? colors.dark : colors.light;
-                    break;
-                  }
-                }
-
-                if (fillColor) {
-                  // Set fill on this element
-                  el.style.setProperty("fill", fillColor, "important");
-                  // Also set fill on all child shape elements (path, circle, rect, etc.)
-                  el.querySelectorAll("path, circle, rect, polygon, ellipse, line, polyline").forEach(child => {
-                    (child as SVGElement).style.setProperty("fill", fillColor!, "important");
-                  });
-                }
-
-                // Remove theme-reactive classes so they don't override our inline style
-                const filteredClasses = classes
-                  .split(" ")
-                  .filter(c => !c.includes("fill-") && !c.startsWith("dark:"))
-                  .join(" ");
-                el.setAttribute("class", filteredClasses);
-              }
-            });
-
-            // Also freeze body clone itself
-            bodyClone.style.color = bodyComputed.color;
-            bodyClone.style.backgroundColor = bodyComputed.backgroundColor;
-
-            // Create overlay with OLD theme background
-            const overlay = document.createElement("div");
-            overlay.id = "theme-reveal-overlay";
-            overlay.style.cssText = `
-              position: fixed;
-              inset: 0;
-              overflow: hidden;
-              z-index: 9998;
-              pointer-events: none;
-              background-color: ${goingDark ? THEME_COLORS.light : THEME_COLORS.dark};
-            `;
-
-            // Position clone at 0,0 (full body clone)
-            bodyClone.style.position = "absolute";
-            bodyClone.style.top = "0";
-            bodyClone.style.left = "0";
-            bodyClone.style.width = "100%";
-            bodyClone.style.margin = "0";
-            overlay.appendChild(bodyClone);
-
+            // Create overlay with frozen snapshot of current theme
+            const overlay = createThemeOverlay(goingDark);
             document.body.appendChild(overlay);
 
             // Toggle real theme IMMEDIATELY (page now has new colors underneath)
@@ -352,7 +279,6 @@ export const toggleTheme = () => {
             const startTime = performance.now();
             const centerX = 50;
             const centerY = 100;
-            const radius = 150; // % - large enough to cover viewport from bottom-center
 
             const animateArcClip = (now: number) => {
               const elapsed = now - startTime;
@@ -369,19 +295,19 @@ export const toggleTheme = () => {
 
               // Arc from startAngle to endAngle, going clockwise (increasing angle)
               // We go from startAngle up to 450 (which is 90° + 360°)
-              for (let deg = startAngleDeg; deg <= 450; deg += 10) {
+              for (let deg = startAngleDeg; deg <= 450; deg += ARC_STEP) {
                 const normalized = deg % 360;
                 // Convert CSS angle (0°=up, clockwise) to math angle (0°=right, counter-clockwise)
                 const rad = ((normalized - 90) * Math.PI) / 180;
-                const x = centerX + radius * Math.cos(rad);
-                const y = centerY + radius * Math.sin(rad);
+                const x = centerX + ARC_RADIUS * Math.cos(rad);
+                const y = centerY + ARC_RADIUS * Math.sin(rad);
                 points.push(`${x}% ${y}%`);
               }
 
               // Ensure we end exactly at endAngle (90°)
               const endRad = ((endAngleDeg - 90) * Math.PI) / 180;
               points.push(
-                `${centerX + radius * Math.cos(endRad)}% ${centerY + radius * Math.sin(endRad)}%`
+                `${centerX + ARC_RADIUS * Math.cos(endRad)}% ${centerY + ARC_RADIUS * Math.sin(endRad)}%`
               );
 
               overlay.style.clipPath =
