@@ -1,15 +1,12 @@
-const THEME_COLORS = {
-  light: "#fed7aa",
-  dark: "#0f172a",
-};
-
-// Mapping of Tailwind fill classes to actual color values
-// Used to freeze SVG fills during theme transitions (getComputedStyle().fill is unreliable)
-const FILL_CLASS_MAP: Record<string, { light: string; dark: string }> = {
-  "fill-tertiary": { light: "#ea580c", dark: "#cbd5e1" },
-  "fill-primary": { light: "#fed7aa", dark: "#0f172a" },
-  "fill-secondary": { light: "#fdba74", dark: "#475569" },
-};
+import {
+  THEME_COLORS,
+  FILL_COLORS,
+  TIMING,
+  WAVE,
+  ARC,
+  isMobile,
+  delay,
+} from "@config/theme";
 
 const updateThemeColor = (isDark: boolean) => {
   const color = isDark ? THEME_COLORS.dark : THEME_COLORS.light;
@@ -31,7 +28,7 @@ export const setTheme = () => {
 };
 
 // Inline script for immediate execution before page render (prevents flash)
-// This is a string that can be injected into a <script> tag
+// Note: This must be a self-contained string (can't import from config)
 export const initThemeScript = `(function(){
   var t=localStorage.getItem("theme");
   var s=window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -39,12 +36,10 @@ export const initThemeScript = `(function(){
   if(d){document.documentElement.classList.add("dark")}
   else{document.documentElement.classList.remove("dark")}
   var m=document.querySelector('meta[name="theme-color"]');
-  if(m)m.setAttribute("content",d?"#0f172a":"#fed7aa");
+  if(m)m.setAttribute("content",d?"${THEME_COLORS.dark}":"${THEME_COLORS.light}");
 })();`;
 
 export const isDarkTheme = () => {
-  // Check the actual DOM state rather than re-computing from localStorage/system
-  // This ensures the toggle always matches what's visually displayed
   return document.documentElement.classList.contains("dark");
 };
 
@@ -56,27 +51,14 @@ export const setDark = () => {
   localStorage.theme = "dark";
 };
 
-// Animation durations (must match CSS variables)
-const PHASE_DURATION = 1000;
-const SHADOW_IN_DURATION = 400; // Faster to sync with toggle button animation (500ms)
-const PAUSE_DURATION = 250; // Pause between steps for audience to catch up
-const MOBILE_BREAKPOINT = 768;
-
-// Wave animation constants
-const WAVE_AMPLITUDE = 3;
-const WAVE_STEP = 5;
-const ARC_RADIUS = 150;
-const ARC_STEP = 10;
-
-const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
-
 /**
  * Creates a theme overlay with a frozen snapshot of the current page.
  * Used to show the "old" theme while the real page switches underneath.
  */
 function createThemeOverlay(goingDark: boolean): HTMLElement {
-  // Capture computed styles from ORIGINAL elements (must be in DOM for getComputedStyle to work)
-  // Exclude scripts and overlay so indices match after we remove them from clone
+  const currentIsDark = document.documentElement.classList.contains("dark");
+
+  // Capture computed styles from original elements
   const originalElements = Array.from(
     document.body.querySelectorAll("*:not(script):not(#theme-reveal-overlay)")
   );
@@ -94,49 +76,48 @@ function createThemeOverlay(goingDark: boolean): HTMLElement {
     .querySelectorAll("script, #theme-reveal-overlay")
     .forEach((el) => el.remove());
 
-  // Apply captured styles to clone elements (by index - now matches since we excluded same elements)
+  // Apply captured styles to clone elements
   const cloneElements = Array.from(bodyClone.querySelectorAll("*"));
   cloneElements.forEach((el, i) => {
-    if (styleMap.has(i)) {
-      const computed = styleMap.get(i)!;
-      if (el instanceof HTMLElement) {
-        el.style.color = computed.color;
-        el.style.backgroundColor = computed.backgroundColor;
-        el.style.borderTopColor = computed.borderTopColor;
-        el.style.borderRightColor = computed.borderRightColor;
-        el.style.borderBottomColor = computed.borderBottomColor;
-        el.style.borderLeftColor = computed.borderLeftColor;
-        el.style.outlineColor = computed.outlineColor;
-      }
+    const computed = styleMap.get(i);
+    if (computed && el instanceof HTMLElement) {
+      el.style.color = computed.color;
+      el.style.backgroundColor = computed.backgroundColor;
+      el.style.borderTopColor = computed.borderTopColor;
+      el.style.borderRightColor = computed.borderRightColor;
+      el.style.borderBottomColor = computed.borderBottomColor;
+      el.style.borderLeftColor = computed.borderLeftColor;
+      el.style.outlineColor = computed.outlineColor;
     }
-    // Handle SVG elements separately (SVGElement is not HTMLElement, so styleMap won't have them)
-    // Map Tailwind fill classes to actual colors (getComputedStyle().fill is unreliable)
-    if (el instanceof SVGElement) {
-      const classes = el.getAttribute("class") || "";
-      const isDark = document.documentElement.classList.contains("dark");
 
-      // Find fill class and map to actual color value
+    // Handle SVG elements - map Tailwind fill classes to actual colors
+    if (el instanceof SVGElement) {
+      const classes = el.getAttribute("class") ?? "";
       let fillColor: string | null = null;
-      for (const [fillClass, colors] of Object.entries(FILL_CLASS_MAP)) {
-        if (classes.includes(fillClass)) {
-          fillColor = isDark ? colors.dark : colors.light;
+
+      // Match exact fill class names (word boundary matching)
+      for (const [key, colors] of Object.entries(FILL_COLORS)) {
+        const fillClass = `fill-${key}`;
+        // Use word boundary check to avoid matching partial class names
+        const classRegex = new RegExp(`\\b${fillClass}\\b`);
+        if (classRegex.test(classes)) {
+          fillColor = currentIsDark ? colors.dark : colors.light;
           break;
         }
       }
 
       if (fillColor) {
-        // Set fill on this element
         el.style.setProperty("fill", fillColor, "important");
-        // Also set fill on all child shape elements (path, circle, rect, etc.)
-        el.querySelectorAll("path, circle, rect, polygon, ellipse, line, polyline").forEach(child => {
-          (child as SVGElement).style.setProperty("fill", fillColor!, "important");
+        // Also set fill on child shape elements
+        el.querySelectorAll("path, circle, rect, polygon, ellipse, line, polyline").forEach((child) => {
+          (child as SVGElement).style.setProperty("fill", fillColor, "important");
         });
       }
 
-      // Remove theme-reactive classes so they don't override our inline style
+      // Remove theme-reactive classes
       const filteredClasses = classes
-        .split(" ")
-        .filter(c => !c.includes("fill-") && !c.startsWith("dark:"))
+        .split(/\s+/)
+        .filter((c) => !(c.startsWith("fill-") || c.startsWith("dark:")))
         .join(" ");
       el.setAttribute("class", filteredClasses);
     }
@@ -153,7 +134,7 @@ function createThemeOverlay(goingDark: boolean): HTMLElement {
     ? THEME_COLORS.light
     : THEME_COLORS.dark;
 
-  // Position clone at 0,0 (full body clone)
+  // Position clone at 0,0
   bodyClone.style.position = "absolute";
   bodyClone.style.top = "0";
   bodyClone.style.left = "0";
@@ -164,6 +145,162 @@ function createThemeOverlay(goingDark: boolean): HTMLElement {
   return overlay;
 }
 
+/**
+ * Animates a wave-shaped clip-path from top to bottom.
+ */
+function animateWaveClip(overlay: HTMLElement, duration: number): void {
+  const startTime = performance.now();
+
+  const animate = (now: number) => {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+
+    const waveY = eased * 100;
+    const points: string[] = [];
+
+    for (let x = 0; x <= 100; x += WAVE.step) {
+      const wave = Math.sin((x / 100) * Math.PI * 4) * WAVE.amplitude;
+      points.push(`${x}% ${waveY + wave}%`);
+    }
+    points.push("100% 100%", "0% 100%");
+
+    overlay.style.clipPath = `polygon(${points.join(", ")})`;
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+
+  requestAnimationFrame(animate);
+}
+
+/**
+ * Animates an arc-shaped clip-path sweeping from bottom-left to bottom-right.
+ */
+function animateArcClip(overlay: HTMLElement, duration: number): void {
+  const startTime = performance.now();
+  const centerX = 50;
+  const centerY = 100;
+
+  const animate = (now: number) => {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+
+    // Wedge from startAngle (moving) to endAngle (fixed at 90°)
+    const startAngleDeg = 270 + eased * 180;
+    const endAngleDeg = 90;
+
+    const points: string[] = [`${centerX}% ${centerY}%`];
+
+    // Arc from startAngle to endAngle (clockwise)
+    for (let deg = startAngleDeg; deg <= 450; deg += ARC.step) {
+      const normalized = deg % 360;
+      const rad = ((normalized - 90) * Math.PI) / 180;
+      const x = centerX + ARC.radius * Math.cos(rad);
+      const y = centerY + ARC.radius * Math.sin(rad);
+      points.push(`${x}% ${y}%`);
+    }
+
+    // End exactly at endAngle
+    const endRad = ((endAngleDeg - 90) * Math.PI) / 180;
+    points.push(
+      `${centerX + ARC.radius * Math.cos(endRad)}% ${centerY + ARC.radius * Math.sin(endRad)}%`
+    );
+
+    overlay.style.clipPath = points.length > 2 ? `polygon(${points.join(", ")})` : "none";
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+
+  requestAnimationFrame(animate);
+}
+
+/**
+ * Mobile theme transition with wave reveal animation.
+ */
+async function mobileTransition(html: HTMLElement, goingDark: boolean): Promise<void> {
+  document.getElementById("theme-reveal-overlay")?.remove();
+
+  const overlay = createThemeOverlay(goingDark);
+  document.body.appendChild(overlay);
+
+  // Toggle theme immediately (new colors underneath)
+  html.classList.toggle("dark", goingDark);
+  html.classList.add("theme-wave");
+
+  // Start wave animation
+  animateWaveClip(overlay, TIMING.phase);
+
+  // Icon change early
+  await delay(100);
+  window.dispatchEvent(new CustomEvent("theme-toggle-visual"));
+
+  // Cleanup after animation
+  await delay(TIMING.phase - 100);
+  html.classList.remove("theme-wave");
+  overlay.remove();
+}
+
+/**
+ * Desktop theme transition with 4-phase animation.
+ * Phase 1: Shadows appear (midday overhead light)
+ * Phase 2: Content melts, then radial wave reveals new theme
+ * Phase 3: Content emerges with new theme
+ * Phase 4: Shadows recede
+ */
+async function desktopTransition(html: HTMLElement, goingDark: boolean): Promise<void> {
+  // Phase 1: Shadows appear
+  html.classList.add("theme-shadow-in");
+  await delay(TIMING.shadowIn);
+  html.classList.remove("theme-shadow-in");
+
+  await delay(TIMING.pause);
+
+  // Phase 2a: Melt content
+  html.classList.add("theme-melt");
+  await delay(TIMING.melt);
+  html.classList.remove("theme-melt");
+  html.classList.add("theme-hidden");
+
+  await delay(TIMING.pause);
+
+  // Phase 2b: Radial wave reveal
+  document.getElementById("theme-reveal-overlay")?.remove();
+  const overlay = createThemeOverlay(goingDark);
+  document.body.appendChild(overlay);
+
+  // Toggle theme immediately
+  html.classList.toggle("dark", goingDark);
+
+  // Trigger icon change
+  window.dispatchEvent(new CustomEvent("theme-toggle-visual"));
+
+  // Animate arc clip
+  animateArcClip(overlay, TIMING.phase);
+  await delay(TIMING.phase);
+
+  // Cleanup wave overlay
+  overlay.remove();
+  html.classList.remove("theme-hidden");
+
+  await delay(TIMING.pause);
+
+  // Phase 3: Content emerges
+  html.classList.add("theme-unmelt");
+  await delay(TIMING.phase);
+  html.classList.remove("theme-unmelt");
+
+  await delay(TIMING.pause);
+
+  // Phase 4: Shadows recede
+  html.classList.add("theme-shadow-out");
+  await delay(TIMING.phase);
+  html.classList.remove("theme-shadow-out");
+}
 
 export const toggleTheme = () => {
   const html = document.documentElement;
@@ -179,174 +316,10 @@ export const toggleTheme = () => {
     setLight();
   }
 
+  // Run appropriate transition (fire-and-forget)
   if (isMobile()) {
-    // Mobile: wave reveal animation
-    // Strategy: Capture styles from original DOM, clone body, apply styles to clone,
-    // toggle real theme, then animate old-theme overlay away from top
-
-    // Remove any existing overlay
-    document.getElementById("theme-reveal-overlay")?.remove();
-
-    // Create overlay with frozen snapshot of current theme
-    const overlay = createThemeOverlay(goingDark);
-    document.body.appendChild(overlay);
-
-    // Toggle real theme IMMEDIATELY (page now has new colors underneath)
-    html.classList.toggle("dark", goingDark);
-    html.classList.add("theme-wave");
-
-    // Animate clip-path: overlay shrinks from TOP, revealing new theme
-    const duration = PHASE_DURATION;
-    const startTime = performance.now();
-
-    const animateClip = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-
-      // Wave Y: 0% -> 100% (wave moves DOWN, old theme shrinks from top)
-      const waveY = eased * 100;
-
-      // Polygon: area BELOW wave (old theme still visible there)
-      const points: string[] = [];
-      for (let x = 0; x <= 100; x += WAVE_STEP) {
-        const wave = Math.sin((x / 100) * Math.PI * 4) * WAVE_AMPLITUDE;
-        points.push(`${x}% ${waveY + wave}%`);
-      }
-      points.push("100% 100%", "0% 100%");
-
-      overlay.style.clipPath = `polygon(${points.join(", ")})`;
-
-      if (progress < 1) {
-        requestAnimationFrame(animateClip);
-      }
-    };
-
-    requestAnimationFrame(animateClip);
-
-    // Icon change early
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent("theme-toggle-visual"));
-    }, 100);
-
-    // Cleanup
-    setTimeout(() => {
-      html.classList.remove("theme-wave");
-      overlay.remove();
-    }, PHASE_DURATION);
+    mobileTransition(html, goingDark);
   } else {
-    // Desktop: 4-phase transition with radial wave
-    // Phase 1: Text shadows appear (midday overhead light)
-    // Phase 2: Content melts, then radial wave reveals new theme
-    // Phase 3: Content emerges with new theme
-    // Phase 4: Shadows recede
-    const MELT_DURATION = 300;
-    const WAVE_DURATION = PHASE_DURATION;
-
-    // Phase 1: Shadows appear (synced with toggle button animation)
-    html.classList.add("theme-shadow-in");
-
-    setTimeout(() => {
-      // Pause after shadows appear
-      html.classList.remove("theme-shadow-in");
-
-      setTimeout(() => {
-        // Phase 2a: Melt content (visible melt, no sweep yet)
-        html.classList.add("theme-melt");
-
-        setTimeout(() => {
-          // Pause after melt, then radial wave
-          html.classList.remove("theme-melt");
-          html.classList.add("theme-hidden");
-
-          setTimeout(() => {
-            // Phase 2b: Radial wave from bottom-center
-            // Remove any existing overlay
-            document.getElementById("theme-reveal-overlay")?.remove();
-
-            // Create overlay with frozen snapshot of current theme
-            const overlay = createThemeOverlay(goingDark);
-            document.body.appendChild(overlay);
-
-            // Toggle real theme IMMEDIATELY (page now has new colors underneath)
-            html.classList.toggle("dark", goingDark);
-
-            // Trigger the sun/moon visual change to animate with the wave
-            window.dispatchEvent(new CustomEvent("theme-toggle-visual"));
-
-            // Animate clip-path: arc sweeps clockwise from bottom-left to bottom-right
-            // Center at bottom-middle, wedge shrinks as start angle moves from 270° to 90°
-            const startTime = performance.now();
-            const centerX = 50;
-            const centerY = 100;
-
-            const animateArcClip = (now: number) => {
-              const elapsed = now - startTime;
-              const progress = Math.min(elapsed / WAVE_DURATION, 1);
-              const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-
-              // Wedge from startAngle (moving) to endAngle (fixed at 90°)
-              // startAngle: 270° → 450° (=90°) over the animation
-              const startAngleDeg = 270 + eased * 180;
-              const endAngleDeg = 90;
-
-              // Build polygon points: center + arc from startAngle to endAngle (clockwise)
-              const points: string[] = [`${centerX}% ${centerY}%`];
-
-              // Arc from startAngle to endAngle, going clockwise (increasing angle)
-              // We go from startAngle up to 450 (which is 90° + 360°)
-              for (let deg = startAngleDeg; deg <= 450; deg += ARC_STEP) {
-                const normalized = deg % 360;
-                // Convert CSS angle (0°=up, clockwise) to math angle (0°=right, counter-clockwise)
-                const rad = ((normalized - 90) * Math.PI) / 180;
-                const x = centerX + ARC_RADIUS * Math.cos(rad);
-                const y = centerY + ARC_RADIUS * Math.sin(rad);
-                points.push(`${x}% ${y}%`);
-              }
-
-              // Ensure we end exactly at endAngle (90°)
-              const endRad = ((endAngleDeg - 90) * Math.PI) / 180;
-              points.push(
-                `${centerX + ARC_RADIUS * Math.cos(endRad)}% ${centerY + ARC_RADIUS * Math.sin(endRad)}%`
-              );
-
-              overlay.style.clipPath =
-                points.length > 2 ? `polygon(${points.join(", ")})` : "none";
-
-              if (progress < 1) {
-                requestAnimationFrame(animateArcClip);
-              }
-            };
-
-            requestAnimationFrame(animateArcClip);
-
-            // Cleanup wave overlay after animation
-            setTimeout(() => {
-              overlay.remove();
-              html.classList.remove("theme-hidden");
-
-              setTimeout(() => {
-                html.classList.add("theme-unmelt");
-
-                setTimeout(() => {
-                  // Pause after unmelt
-                  html.classList.remove("theme-unmelt");
-
-                  setTimeout(() => {
-                    // Phase 4: Shadows fade out
-                    html.classList.add("theme-shadow-out");
-
-                    setTimeout(() => {
-                      // Clean up
-                      html.classList.remove("theme-shadow-out");
-                    }, PHASE_DURATION);
-                  }, PAUSE_DURATION);
-                }, PHASE_DURATION);
-              }, PAUSE_DURATION);
-            }, WAVE_DURATION);
-          }, PAUSE_DURATION);
-        }, MELT_DURATION);
-      }, PAUSE_DURATION);
-    }, SHADOW_IN_DURATION);
+    desktopTransition(html, goingDark);
   }
 };

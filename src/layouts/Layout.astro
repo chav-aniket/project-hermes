@@ -39,28 +39,6 @@ const { title } = Astro.props;
     {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
   </head>
   <body>
-    <!-- Hidden SVG for mobile wave clip path and mask -->
-    <svg width="0" height="0" class="absolute" aria-hidden="true">
-      <defs>
-        <clipPath id="wave-clip" clipPathUnits="objectBoundingBox">
-          <path d="M0,0 L1,0 L1,0.82
-                   C0.917,0.88 0.833,0.92 0.75,0.85
-                   C0.667,0.78 0.583,0.82 0.5,0.88
-                   C0.417,0.94 0.333,0.82 0.25,0.85
-                   C0.167,0.88 0.083,0.92 0,0.85 Z"/>
-        </clipPath>
-        <!-- Mask for reveal animation (white=visible, black=hidden) -->
-        <mask id="wave-mask" maskContentUnits="objectBoundingBox">
-          <rect fill="white" width="1" height="1"/>
-          <path fill="black" d="M0,0.82
-                   C0.083,0.88 0.167,0.92 0.25,0.85
-                   C0.333,0.78 0.417,0.82 0.5,0.88
-                   C0.583,0.94 0.667,0.82 0.75,0.85
-                   C0.833,0.88 0.917,0.92 1,0.85
-                   L1,1 L0,1 Z"/>
-        </mask>
-      </defs>
-    </svg>
     <main>
       <slot />
     </main>
@@ -69,16 +47,22 @@ const { title } = Astro.props;
 </html>
 <style is:global>
   :root {
-    /* Theme colors */
+    /* Theme colors - synced with src/config/theme.ts */
     --theme-bg: theme(colors.primary.light);
     --theme-tertiary: theme(colors.tertiary.light);
-    /* Transition timing */
+
+    /* Transition timing - synced with src/config/theme.ts TIMING */
     --phase-duration: 600ms;
     --shadow-in-duration: 400ms;
     --melt-duration: 300ms;
-    /* Shadows (theme-aware) */
+
+    /* Shadows for light theme */
     --text-shadow: 0 6px 20px rgb(0 0 0 / 0.6), 0 2px 8px rgb(0 0 0 / 0.4);
     --box-shadow: 0 12px 40px rgb(0 0 0 / 0.5), 0 4px 12px rgb(0 0 0 / 0.3);
+
+    /* Default animation timing (overridden by phase classes) */
+    --shadow-duration: var(--phase-duration);
+    --shadow-easing: ease-out;
   }
 
   html.dark {
@@ -99,45 +83,52 @@ const { title } = Astro.props;
     outline: none;
   }
 
-  /* Shared selectors */
-  html:is(.theme-shadow-in, .theme-unmelt) :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    box-shadow: var(--box-shadow);
-  }
-
-  html:is(.theme-shadow-in, .theme-unmelt) :is(h1, h2, h3) {
-    text-shadow: var(--text-shadow);
-  }
-
-  html:is(.theme-melt, .theme-shadow-out) :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
+  /*
+   * Theme shadow elements - use [data-theme-shadow] attribute
+   * Default state: no shadows. Shadows only appear during animation phases.
+   */
+  [data-theme-shadow="box"] {
+    transition: box-shadow var(--shadow-duration) var(--shadow-easing);
     box-shadow: none;
   }
 
-  html:is(.theme-melt, .theme-shadow-out) :is(h1, h2, h3) {
+  [data-theme-shadow="text"] {
+    transition: text-shadow var(--shadow-duration) var(--shadow-easing);
     text-shadow: none;
   }
 
   /* Phase 1: Shadows appear */
-  html.theme-shadow-in :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    transition: box-shadow var(--shadow-in-duration) ease-out !important;
+  html.theme-shadow-in {
+    --shadow-duration: var(--shadow-in-duration);
+    --shadow-easing: ease-out;
   }
 
-  html.theme-shadow-in :is(h1, h2, h3) {
-    transition: text-shadow var(--shadow-in-duration) ease-out !important;
+  html.theme-shadow-in [data-theme-shadow="box"] {
+    box-shadow: var(--box-shadow);
+  }
+
+  html.theme-shadow-in [data-theme-shadow="text"] {
+    text-shadow: var(--text-shadow);
   }
 
   /* Phase 2a: Content melts */
   html.theme-melt main {
-    transition: opacity var(--melt-duration) ease-in, filter var(--melt-duration) ease-in !important;
+    transition: opacity var(--melt-duration) ease-in, filter var(--melt-duration) ease-in;
     opacity: 0;
     filter: blur(16px);
   }
 
-  html.theme-melt :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    transition: box-shadow var(--melt-duration) ease-in !important;
+  html.theme-melt {
+    --shadow-duration: var(--melt-duration);
+    --shadow-easing: ease-in;
   }
 
-  html.theme-melt :is(h1, h2, h3) {
-    transition: text-shadow var(--melt-duration) ease-in !important;
+  html.theme-melt [data-theme-shadow="box"] {
+    box-shadow: none;
+  }
+
+  html.theme-melt [data-theme-shadow="text"] {
+    text-shadow: none;
   }
 
   /* Phase 2b: Hidden during sweep */
@@ -149,36 +140,46 @@ const { title } = Astro.props;
 
   /* Phase 3: Content emerges */
   html.theme-unmelt main {
-    transition: opacity var(--phase-duration) ease-out, filter var(--phase-duration) ease-out !important;
+    transition: opacity var(--phase-duration) ease-out, filter var(--phase-duration) ease-out;
     opacity: 1;
     filter: blur(0);
   }
 
-  html.theme-unmelt :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    transition: box-shadow var(--phase-duration) ease-out !important;
+  html.theme-unmelt {
+    --shadow-duration: var(--phase-duration);
+    --shadow-easing: ease-out;
   }
 
-  html.theme-unmelt :is(h1, h2, h3) {
-    transition: text-shadow var(--phase-duration) ease-out !important;
+  html.theme-unmelt [data-theme-shadow="box"] {
+    box-shadow: var(--box-shadow);
+  }
+
+  html.theme-unmelt [data-theme-shadow="text"] {
+    text-shadow: var(--text-shadow);
   }
 
   /* Phase 4: Shadows recede */
-  html.theme-shadow-out :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    transition: box-shadow var(--phase-duration) ease-in !important;
+  html.theme-shadow-out {
+    --shadow-duration: var(--phase-duration);
+    --shadow-easing: ease-in;
   }
 
-  html.theme-shadow-out :is(h1, h2, h3) {
-    transition: text-shadow var(--phase-duration) ease-in !important;
+  html.theme-shadow-out [data-theme-shadow="box"] {
+    box-shadow: none;
+  }
+
+  html.theme-shadow-out [data-theme-shadow="text"] {
+    text-shadow: none;
   }
 
   /* Toggle excluded from shadows */
-  [data-theme-toggle], [data-theme-toggle] * {
+  [data-theme-toggle],
+  [data-theme-toggle] * {
     text-shadow: none !important;
     box-shadow: none !important;
   }
 
   /* Theme reveal overlay (cloned content for wave animation) */
-  /* JS animates clip-path directly for wave-shaped reveal */
   #theme-reveal-overlay {
     position: fixed;
     inset: 0;
