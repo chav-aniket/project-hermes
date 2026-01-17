@@ -33,6 +33,7 @@
     class="peer h-0 w-0 opacity-0"
     checked={isDark}
     on:click={handleClick}
+    aria-label="Toggle dark mode"
   />
   <span
     class="
