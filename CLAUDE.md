@@ -21,7 +21,7 @@ This is an Astro project with Solid.js and Svelte components, deployed on Vercel
 
 ## Theme System
 
-The site supports light/dark themes with these colors (defined in `tailwind.config.ts`):
+The site supports light/dark themes with these colors (defined in `src/app.css` via `@theme`):
 
 | Token | Light | Dark |
 |-------|-------|------|
@@ -76,10 +76,10 @@ The theme transition uses a JS-driven overlay system with CSS animations:
 <span class="duration-[var(--arc-duration)]">
 ```
 
-**Use `theme()` function in component styles for DRY colors:**
+**Use CSS custom properties for DRY colors (Tailwind v4 exposes `@theme` values as CSS variables):**
 ```css
 .slider:before {
-  background: theme(colors.secondary.dark);
+  background: var(--color-secondary-dark);
 }
 ```
 

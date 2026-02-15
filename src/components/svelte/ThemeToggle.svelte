@@ -46,7 +46,7 @@ const handleClick = (e: Event) => {
 
   /* Moon: slate-600 background with crescent glow effect */
   :global(.dark) .slider:before {
-    background: theme(colors.secondary.dark);
+    background: var(--color-secondary-dark);
     box-shadow:
       inset -3px -2px 5px -2px #8983f7,
       inset -10px -4px 0 0 #a3dafb;
