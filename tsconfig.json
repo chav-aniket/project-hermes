@@ -5,6 +5,7 @@
     "jsxImportSource": "solid-js",
     "baseUrl": "src",
     "paths": {
+      "@config/*": ["config/*"],
       "@solidComponents/*": ["components/solidjs/*"],
       "@astroComponents/*": ["components/astro/*"],
       "@svelteComponents/*": ["components/svelte/*"],

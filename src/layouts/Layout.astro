@@ -47,23 +47,18 @@ const { title } = Astro.props;
 </html>
 <style is:global>
   :root {
-    /* Theme colors */
+    /* Theme colors - synced with src/config/theme.ts */
     --theme-bg: theme(colors.primary.light);
     --theme-tertiary: theme(colors.tertiary.light);
-    /* Transition timing */
-    --phase-duration: 600ms;
-    --shadow-in-duration: 400ms;
-    --melt-duration: 300ms;
-    /* Shadows (theme-aware) */
-    --text-shadow: 0 6px 20px rgb(0 0 0 / 0.6), 0 2px 8px rgb(0 0 0 / 0.4);
-    --box-shadow: 0 12px 40px rgb(0 0 0 / 0.5), 0 4px 12px rgb(0 0 0 / 0.3);
+
+    /* Shadow animation - synced with src/config/theme.ts TIMING.phase */
+    --arc-duration: 2500ms;
+    --default-shadow: 8px 12px 24px rgba(0, 0, 0, 0.25);
   }
 
   html.dark {
     --theme-bg: theme(colors.primary.dark);
     --theme-tertiary: theme(colors.tertiary.dark);
-    --text-shadow: 0 6px 20px rgb(255 255 255 / 0.5), 0 2px 8px rgb(255 255 255 / 0.3);
-    --box-shadow: 0 12px 40px rgb(255 255 255 / 0.4), 0 4px 12px rgb(255 255 255 / 0.2);
   }
 
   html {
@@ -77,166 +72,71 @@ const { title } = Astro.props;
     outline: none;
   }
 
-  /* Shared selectors */
-  html:is(.theme-shadow-in, .theme-unmelt) :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    box-shadow: var(--box-shadow);
+  /*
+   * Theme shadow elements - always-on default shadow.
+   * CSS @keyframes animates shadows during theme transitions to follow light source.
+   */
+  [data-theme-shadow="box"] {
+    box-shadow: var(--default-shadow);
   }
 
-  html:is(.theme-shadow-in, .theme-unmelt) :is(h1, h2, h3) {
-    text-shadow: var(--text-shadow);
+  /* Animate shadows only on real page elements, not inside overlay clone */
+  html.theme-arc-animating [data-theme-shadow="box"]:not(#theme-reveal-overlay *) {
+    animation: shadow-follow-light var(--arc-duration) ease-in-out;
   }
 
-  html:is(.theme-melt, .theme-shadow-out) :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    box-shadow: none;
+  @keyframes shadow-follow-light {
+    0% {
+      /* Default: light at bottom-left, shadow to bottom-right */
+      box-shadow: 8px 12px 24px rgba(0, 0, 0, 0.25);
+    }
+    50% {
+      /* Midpoint: light overhead, shadow directly down, darker */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    100% {
+      /* End: light at bottom-right, shadow back to bottom-right */
+      box-shadow: 8px 12px 24px rgba(0, 0, 0, 0.25);
+    }
   }
 
-  html:is(.theme-melt, .theme-shadow-out) :is(h1, h2, h3) {
-    text-shadow: none;
-  }
-
-  /* Phase 1: Shadows appear */
-  html.theme-shadow-in :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    transition: box-shadow var(--shadow-in-duration) ease-out !important;
-  }
-
-  html.theme-shadow-in :is(h1, h2, h3) {
-    transition: text-shadow var(--shadow-in-duration) ease-out !important;
-  }
-
-  /* Phase 2a: Content melts */
-  html.theme-melt main {
-    transition: opacity var(--melt-duration) ease-in, filter var(--melt-duration) ease-in !important;
-    opacity: 0;
-    filter: blur(16px);
-  }
-
-  html.theme-melt :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    transition: box-shadow var(--melt-duration) ease-in !important;
-  }
-
-  html.theme-melt :is(h1, h2, h3) {
-    transition: text-shadow var(--melt-duration) ease-in !important;
-  }
-
-  /* Phase 2b: Hidden during sweep */
-  html.theme-hidden main {
-    opacity: 0;
-    filter: blur(16px);
-    visibility: hidden;
-  }
-
-  /* Phase 3: Content emerges */
-  html.theme-unmelt main {
-    transition: opacity var(--phase-duration) ease-out, filter var(--phase-duration) ease-out !important;
-    opacity: 1;
-    filter: blur(0);
-  }
-
-  html.theme-unmelt :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    transition: box-shadow var(--phase-duration) ease-out !important;
-  }
-
-  html.theme-unmelt :is(h1, h2, h3) {
-    transition: text-shadow var(--phase-duration) ease-out !important;
-  }
-
-  /* Phase 4: Shadows recede */
-  html.theme-shadow-out :is([class*="card"], [class*="Card"], [class*="pill"], [class*="Pill"], [class*="tag"]) {
-    transition: box-shadow var(--phase-duration) ease-in !important;
-  }
-
-  html.theme-shadow-out :is(h1, h2, h3) {
-    transition: text-shadow var(--phase-duration) ease-in !important;
-  }
-
-  /* Toggle excluded from shadows */
-  [data-theme-toggle], [data-theme-toggle] * {
-    text-shadow: none !important;
+  /* Elements excluded from theme shadows */
+  :is([data-theme-toggle], .hover-glow),
+  :is([data-theme-toggle], .hover-glow) * {
     box-shadow: none !important;
   }
 
-  /* Desktop: color sweep that IS the transition */
-  @media (min-width: 768px) {
-    html::after {
-      content: "";
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 9997;
-      opacity: 0;
-    }
-
-    /* Sunset: sweeps right to left - day → dusk → evening → night */
-    html.theme-sunset::after {
-      opacity: 1;
-      background: linear-gradient(
-        to left,
-        theme(colors.primary.dark) 0%,
-        #1e1b4b 20%,
-        #4c1d95 35%,
-        #be185d 50%,
-        #f97316 70%,
-        transparent 100%
-      );
-      animation: sweep-left var(--melt-duration) ease-out forwards;
-    }
-
-    /* Sunrise: sweeps left to right - night → dawn → morning → day */
-    html.theme-sunrise::after {
-      opacity: 1;
-      background: linear-gradient(
-        to right,
-        theme(colors.primary.light) 0%,
-        #fcd34d 20%,
-        #fb923c 35%,
-        #f472b6 50%,
-        #a78bfa 70%,
-        transparent 100%
-      );
-      animation: sweep-right var(--melt-duration) ease-out forwards;
-    }
+  /* Theme reveal overlay (cloned content for wave animation) */
+  #theme-reveal-overlay {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 9998;
+    pointer-events: none;
   }
 
-  @keyframes sweep-left {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
+  /* Freeze all animations inside overlay - content should be static snapshot */
+  #theme-reveal-overlay * {
+    animation: none !important;
+    transition: none !important;
   }
 
-  @keyframes sweep-right {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
+  /* Elevate real toggle above overlay during animation */
+  html.theme-arc-animating [data-theme-toggle],
+  html.theme-wave [data-theme-toggle] {
+    position: relative;
+    z-index: 9999;
   }
 
-  @keyframes wash-wave {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(0); }
+  /* Hide cloned toggle in overlay so real toggle shows through */
+  #theme-reveal-overlay [data-theme-toggle] {
+    visibility: hidden;
   }
 
-  /* Mobile: wave overlay for iOS status bar sync */
+  /* Mobile: add background color */
   @media (max-width: 767px) {
-    html::before {
-      content: "";
-      position: fixed;
-      inset: 0 0 auto 0;
-      height: 120vh;
-      background: theme(colors.primary.dark);
-      transform: translateY(-100%);
-      pointer-events: none;
-      z-index: 9999;
-      clip-path: polygon(
-        0% 0%, 100% 0%, 100% 85%, 90% 88%, 75% 85%,
-        60% 90%, 45% 85%, 30% 90%, 15% 85%, 0% 88%
-      );
-    }
-
-    html.dark::before {
-      background: theme(colors.primary.light);
-    }
-
-    html.theme-wave::before {
-      animation: wash-wave 600ms ease-out forwards;
+    #theme-reveal-overlay {
+      background: var(--theme-bg);
     }
   }
 
