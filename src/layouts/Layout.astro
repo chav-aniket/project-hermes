@@ -51,25 +51,14 @@ const { title } = Astro.props;
     --theme-bg: theme(colors.primary.light);
     --theme-tertiary: theme(colors.tertiary.light);
 
-    /* Transition timing - synced with src/config/theme.ts TIMING */
-    --phase-duration: 600ms;
-    --shadow-in-duration: 400ms;
-    --melt-duration: 300ms;
-
-    /* Shadows for light theme */
-    --text-shadow: 0 6px 20px rgb(0 0 0 / 0.6), 0 2px 8px rgb(0 0 0 / 0.4);
-    --box-shadow: 0 12px 40px rgb(0 0 0 / 0.5), 0 4px 12px rgb(0 0 0 / 0.3);
-
-    /* Default animation timing (overridden by phase classes) */
-    --shadow-duration: var(--phase-duration);
-    --shadow-easing: ease-out;
+    /* Shadow animation - synced with src/config/theme.ts TIMING.phase */
+    --arc-duration: 2500ms;
+    --default-shadow: 8px 12px 24px rgba(0, 0, 0, 0.25);
   }
 
   html.dark {
     --theme-bg: theme(colors.primary.dark);
     --theme-tertiary: theme(colors.tertiary.dark);
-    --text-shadow: 0 6px 20px rgb(255 255 255 / 0.5), 0 2px 8px rgb(255 255 255 / 0.3);
-    --box-shadow: 0 12px 40px rgb(255 255 255 / 0.4), 0 4px 12px rgb(255 255 255 / 0.2);
   }
 
   html {
@@ -84,98 +73,36 @@ const { title } = Astro.props;
   }
 
   /*
-   * Theme shadow elements - use [data-theme-shadow] attribute
-   * Default state: no shadows. Shadows only appear during animation phases.
+   * Theme shadow elements - always-on default shadow.
+   * CSS @keyframes animates shadows during theme transitions to follow light source.
    */
   [data-theme-shadow="box"] {
-    transition: box-shadow var(--shadow-duration) var(--shadow-easing);
-    box-shadow: none;
+    box-shadow: var(--default-shadow);
   }
 
-  [data-theme-shadow="text"] {
-    transition: text-shadow var(--shadow-duration) var(--shadow-easing);
-    text-shadow: none;
+  /* Animate shadows only on real page elements, not inside overlay clone */
+  html.theme-arc-animating [data-theme-shadow="box"]:not(#theme-reveal-overlay *) {
+    animation: shadow-follow-light var(--arc-duration) ease-in-out;
   }
 
-  /* Phase 1: Shadows appear */
-  html.theme-shadow-in {
-    --shadow-duration: var(--shadow-in-duration);
-    --shadow-easing: ease-out;
+  @keyframes shadow-follow-light {
+    0% {
+      /* Default: light at bottom-left, shadow to bottom-right */
+      box-shadow: 8px 12px 24px rgba(0, 0, 0, 0.25);
+    }
+    50% {
+      /* Midpoint: light overhead, shadow directly down, darker */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    100% {
+      /* End: light at bottom-right, shadow back to bottom-right */
+      box-shadow: 8px 12px 24px rgba(0, 0, 0, 0.25);
+    }
   }
 
-  html.theme-shadow-in [data-theme-shadow="box"] {
-    box-shadow: var(--box-shadow);
-  }
-
-  html.theme-shadow-in [data-theme-shadow="text"] {
-    text-shadow: var(--text-shadow);
-  }
-
-  /* Phase 2a: Content melts */
-  html.theme-melt main {
-    transition: opacity var(--melt-duration) ease-in, filter var(--melt-duration) ease-in;
-    opacity: 0;
-    filter: blur(16px);
-  }
-
-  html.theme-melt {
-    --shadow-duration: var(--melt-duration);
-    --shadow-easing: ease-in;
-  }
-
-  html.theme-melt [data-theme-shadow="box"] {
-    box-shadow: none;
-  }
-
-  html.theme-melt [data-theme-shadow="text"] {
-    text-shadow: none;
-  }
-
-  /* Phase 2b: Hidden during sweep */
-  html.theme-hidden main {
-    opacity: 0;
-    filter: blur(16px);
-    visibility: hidden;
-  }
-
-  /* Phase 3: Content emerges */
-  html.theme-unmelt main {
-    transition: opacity var(--phase-duration) ease-out, filter var(--phase-duration) ease-out;
-    opacity: 1;
-    filter: blur(0);
-  }
-
-  html.theme-unmelt {
-    --shadow-duration: var(--phase-duration);
-    --shadow-easing: ease-out;
-  }
-
-  html.theme-unmelt [data-theme-shadow="box"] {
-    box-shadow: var(--box-shadow);
-  }
-
-  html.theme-unmelt [data-theme-shadow="text"] {
-    text-shadow: var(--text-shadow);
-  }
-
-  /* Phase 4: Shadows recede */
-  html.theme-shadow-out {
-    --shadow-duration: var(--phase-duration);
-    --shadow-easing: ease-in;
-  }
-
-  html.theme-shadow-out [data-theme-shadow="box"] {
-    box-shadow: none;
-  }
-
-  html.theme-shadow-out [data-theme-shadow="text"] {
-    text-shadow: none;
-  }
-
-  /* Toggle excluded from shadows */
-  [data-theme-toggle],
-  [data-theme-toggle] * {
-    text-shadow: none !important;
+  /* Elements excluded from theme shadows */
+  :is([data-theme-toggle], .hover-glow),
+  :is([data-theme-toggle], .hover-glow) * {
     box-shadow: none !important;
   }
 
@@ -186,6 +113,24 @@ const { title } = Astro.props;
     overflow: hidden;
     z-index: 9998;
     pointer-events: none;
+  }
+
+  /* Freeze all animations inside overlay - content should be static snapshot */
+  #theme-reveal-overlay * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Elevate real toggle above overlay during animation */
+  html.theme-arc-animating [data-theme-toggle],
+  html.theme-wave [data-theme-toggle] {
+    position: relative;
+    z-index: 9999;
+  }
+
+  /* Hide cloned toggle in overlay so real toggle shows through */
+  #theme-reveal-overlay [data-theme-toggle] {
+    visibility: hidden;
   }
 
   /* Mobile: add background color */

@@ -16,10 +16,8 @@ export const FILL_COLORS = {
 } as const;
 
 export const TIMING = {
-  phase: 600,
-  shadowIn: 400,
-  melt: 300,
-  pause: 250,
+  phase: 2500, // Debugging: slowed down to observe animation
+  pause: 300,
 } as const;
 
 export const BREAKPOINTS = {

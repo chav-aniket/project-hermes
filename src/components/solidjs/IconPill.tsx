@@ -6,7 +6,6 @@ const IconPill: Component<{
 }> = (props) => {
   return (
     <div
-      data-theme-shadow="box"
       class={`w-fit whitespace-nowrap bg-secondary-light dark:bg-secondary-dark${props.class}`}
     >
       {props.children}

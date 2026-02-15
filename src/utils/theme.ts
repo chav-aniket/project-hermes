@@ -134,9 +134,9 @@ function createThemeOverlay(goingDark: boolean): HTMLElement {
     ? THEME_COLORS.light
     : THEME_COLORS.dark;
 
-  // Position clone at 0,0
+  // Position clone to match current scroll position
   bodyClone.style.position = "absolute";
-  bodyClone.style.top = "0";
+  bodyClone.style.top = `-${window.scrollY}px`;
   bodyClone.style.left = "0";
   bodyClone.style.width = "100%";
   bodyClone.style.margin = "0";
@@ -246,60 +246,28 @@ async function mobileTransition(html: HTMLElement, goingDark: boolean): Promise<
 }
 
 /**
- * Desktop theme transition with 4-phase animation.
- * Phase 1: Shadows appear (midday overhead light)
- * Phase 2: Content melts, then radial wave reveals new theme
- * Phase 3: Content emerges with new theme
- * Phase 4: Shadows recede
+ * Desktop theme transition with arc sweep and CSS-driven shadow animation.
+ * The `theme-arc-animating` class triggers CSS @keyframes for shadows.
  */
 async function desktopTransition(html: HTMLElement, goingDark: boolean): Promise<void> {
-  // Phase 1: Shadows appear
-  html.classList.add("theme-shadow-in");
-  await delay(TIMING.shadowIn);
-  html.classList.remove("theme-shadow-in");
-
-  await delay(TIMING.pause);
-
-  // Phase 2a: Melt content
-  html.classList.add("theme-melt");
-  await delay(TIMING.melt);
-  html.classList.remove("theme-melt");
-  html.classList.add("theme-hidden");
-
-  await delay(TIMING.pause);
-
-  // Phase 2b: Radial wave reveal
   document.getElementById("theme-reveal-overlay")?.remove();
   const overlay = createThemeOverlay(goingDark);
   document.body.appendChild(overlay);
 
-  // Toggle theme immediately
+  // Toggle theme immediately (new colors underneath)
   html.classList.toggle("dark", goingDark);
-
-  // Trigger icon change
   window.dispatchEvent(new CustomEvent("theme-toggle-visual"));
 
-  // Animate arc clip
+  // Trigger CSS animation for shadows
+  html.classList.add("theme-arc-animating");
+
+  // Run arc sweep (JS still needed for clip-path animation)
   animateArcClip(overlay, TIMING.phase);
+
   await delay(TIMING.phase);
 
-  // Cleanup wave overlay
   overlay.remove();
-  html.classList.remove("theme-hidden");
-
-  await delay(TIMING.pause);
-
-  // Phase 3: Content emerges
-  html.classList.add("theme-unmelt");
-  await delay(TIMING.phase);
-  html.classList.remove("theme-unmelt");
-
-  await delay(TIMING.pause);
-
-  // Phase 4: Shadows recede
-  html.classList.add("theme-shadow-out");
-  await delay(TIMING.phase);
-  html.classList.remove("theme-shadow-out");
+  html.classList.remove("theme-arc-animating");
 }
 
 export const toggleTheme = () => {
