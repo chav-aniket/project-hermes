@@ -1,20 +1,19 @@
 import solidJs from "@astrojs/solid-js";
 import svelte from "@astrojs/svelte";
-import tailwind from "@astrojs/tailwind";
 import vercel from "@astrojs/vercel";
 // https://astro.build/config
 import AstroPWA from "@vite-pwa/astro";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import oxlintPlugin from "vite-plugin-oxlint";
 
 // https://astro.build/config
 export default defineConfig({
   vite: {
-    plugins: [oxlintPlugin()],
+    plugins: [tailwindcss(), oxlintPlugin()],
   },
   integrations: [
     solidJs(),
-    tailwind(),
     svelte(),
     AstroPWA({
       mode: import.meta.env.MODE,

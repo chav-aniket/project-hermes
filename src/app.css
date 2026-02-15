@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Primary: orange-200 (light) / slate-900 (dark & default) */
+  --color-primary: #0f172a;
+  --color-primary-light: #fed7aa;
+  --color-primary-dark: #0f172a;
+
+  /* Secondary: orange-300 (light) / slate-600 (dark & default) */
+  --color-secondary: #475569;
+  --color-secondary-light: #fdba74;
+  --color-secondary-dark: #475569;
+
+  /* Tertiary: orange-600 (light) / slate-300 (dark & default) */
+  --color-tertiary: #cbd5e1;
+  --color-tertiary-light: #ea580c;
+  --color-tertiary-dark: #cbd5e1;
+
+  /* Text colors */
+  --color-textLight: #374151;
+  --color-textDark: #d1d5db;
+
+  /* Standard colors */
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+}
