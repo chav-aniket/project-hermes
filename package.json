@@ -37,7 +37,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "lefthook": "^1.13.6",
-    "oxlint": "^0.4.4",
+    "oxlint": "^1.50.0",
     "tsconfig-paths": "^4.2.0",
     "vite-plugin-biome": "^1.1.2",
     "vite-plugin-oxlint": "^1.6.0"
