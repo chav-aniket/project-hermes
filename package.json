@@ -40,6 +40,6 @@
     "oxlint": "^0.4.4",
     "tsconfig-paths": "^4.2.0",
     "vite-plugin-biome": "^1.1.2",
-    "vite-plugin-oxlint": "^1.6.0"
+    "vite-plugin-oxlint": "^2.0.1"
   }
 }
