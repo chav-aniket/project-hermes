@@ -90,6 +90,23 @@ function createThemeOverlay(goingDark: boolean): HTMLElement {
       el.style.outlineColor = computed.outlineColor;
     }
 
+    // Canvas bitmaps are NOT copied by cloneNode, so the cloned canvas would be
+    // blank. Paint the live (old-theme) canvas onto the clone so the old ink is
+    // frozen into the overlay and the wipe reveals the new-theme ink underneath
+    // in lockstep with the rest of the page (e.g. InvisibleInk particles).
+    if (el instanceof HTMLCanvasElement) {
+      const src = originalElements[i];
+      if (src instanceof HTMLCanvasElement && src.width > 0 && src.height > 0) {
+        el.width = src.width;
+        el.height = src.height;
+        try {
+          el.getContext("2d")?.drawImage(src, 0, 0);
+        } catch {
+          // Tainted canvas (cross-origin) — leave the clone blank.
+        }
+      }
+    }
+
     // Handle SVG elements - map Tailwind fill classes to actual colors
     if (el instanceof SVGElement) {
       const classes = el.getAttribute("class") ?? "";

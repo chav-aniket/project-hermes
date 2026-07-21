@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { calcSize } from "@utils/resizing";
   import { IconVendor } from "@utils/types";
 
   export let base: number,
@@ -7,10 +6,16 @@
     style: string,
     viewBox: IconVendor = IconVendor.SimpleIcon,
     customViewBox = "";
-  let size = calcSize(base, scale);
-  const handleResize = () => {
-    size = calcSize(base, scale);
-  };
+
+  // Responsive sizing done in pure CSS so the icon can render as static SSR
+  // markup with no hydration. `clamp()` reproduces the old stepped calcSize()
+  // curve (base at ≤640px viewport → base + 4*scale at ≥1280px) as a smooth
+  // interpolation. Solving the linear middle term: size(vw) grows by 4*scale
+  // over the 640→1280 range, i.e. (base - 4*scale)px + (scale * 0.625)vw.
+  const dim = `clamp(${base}px, calc(${base - 4 * scale}px + ${
+    scale * 0.625
+  }vw), ${base + 4 * scale}px)`;
+  const sizeStyle = `width:${dim};height:${dim}`;
 
   let viewBoxValue = "";
   switch (viewBox) {
@@ -26,14 +31,12 @@
   }
 </script>
 
-<svelte:window on:resize={() => handleResize()} />
 <svg
   role="img"
   viewBox={viewBoxValue}
   xmlns="http://www.w3.org/2000/svg"
   class={`fill-tertiary-light dark:fill-tertiary-dark ${style}`}
-  width={size}
-  height={size}
+  style={sizeStyle}
 >
   <slot />
 </svg>

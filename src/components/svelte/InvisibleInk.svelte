@@ -116,13 +116,29 @@ onMount(() => {
 		raf = requestAnimationFrame(loop);
 	};
 
-	const start = () => {
+	// The rAF loop only runs while the pill is both on-screen and in a visible
+	// tab, so it isn't burning the main thread when nobody can see it.
+	let onScreen = true;
+	let running = false;
+
+	const run = () => {
+		if (reduce || running || !onScreen || document.hidden) return;
+		running = true;
+		raf = requestAnimationFrame(loop);
+	};
+
+	const stop = () => {
+		running = false;
 		cancelAnimationFrame(raf);
+	};
+
+	const start = () => {
+		stop();
 		build();
 		if (reduce) {
 			paint(false);
 		} else {
-			raf = requestAnimationFrame(loop);
+			run();
 		}
 	};
 
@@ -133,6 +149,22 @@ onMount(() => {
 		if (reduce) paint(false);
 	};
 	window.addEventListener("resize", onResize);
+
+	const onVisibility = () => {
+		if (document.hidden) stop();
+		else run();
+	};
+	document.addEventListener("visibilitychange", onVisibility);
+
+	const io = new IntersectionObserver(
+		([entry]) => {
+			onScreen = entry.isIntersecting;
+			if (onScreen) run();
+			else stop();
+		},
+		{ threshold: 0 },
+	);
+	io.observe(host);
 
 	// Keep the ink in sync when the theme (html.dark) flips.
 	const observer = new MutationObserver(() => {
@@ -145,8 +177,10 @@ onMount(() => {
 	});
 
 	return () => {
-		cancelAnimationFrame(raf);
+		stop();
 		window.removeEventListener("resize", onResize);
+		document.removeEventListener("visibilitychange", onVisibility);
+		io.disconnect();
 		observer.disconnect();
 	};
 });

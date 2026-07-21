@@ -32,7 +32,6 @@ const { name, description, language, stargazers, link } = Astro.props.repo;
   >
     {language} | {stargazers}
     <StarIcon
-    client:load
     base={20}
     scale={1}
     style="inline-block pb-1 group-hover/repo:fill-tertiary-light dark:group-hover/repo:fill-tertiary-dark"

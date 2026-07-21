@@ -12,7 +12,7 @@ const sydLink =
 ---
 
 <nav class="flex flex-row items-center gap-5">
-  <ThemeToggle client:only />
+  <ThemeToggle client:load />
   <span class={styles}>
     <a
       target="_blank"
@@ -20,7 +20,7 @@ const sydLink =
       href="https://www.github.com/chav-aniket"
       class="hover-scale-lg inline-block"
     >
-      <GithubIcon client:load base={base} scale={scale} style="" />
+      <GithubIcon base={base} scale={scale} style="" />
     </a>
   </span>
   <span class={styles}>
@@ -30,7 +30,7 @@ const sydLink =
       href="https://www.linkedin.com/in/chavaniket/"
       class="hover-scale-lg inline-block"
     >
-      <LinkedInIcon client:load base={base} scale={scale} style="" />
+      <LinkedInIcon base={base} scale={scale} style="" />
     </a>
   </span>
   <a target="_blank" rel="noopener noreferrer" href={sydLink} class="hover-scale">
@@ -39,7 +39,6 @@ const sydLink =
     >
       <div class="pl-2">
         <LocationDotIcon
-          client:load
           base={base + 20}
           scale={scale}
           style="inline py-2"
