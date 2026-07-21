@@ -3,8 +3,8 @@ import Layout from "@layouts/Layout.astro";
 
 import Nav from "@astroComponents/Nav.astro";
 import Repo from "@astroComponents/Repo.astro";
-import { Age, IconPill } from "@solidComponents/solidComponents";
-import AtlassianIcon from "@svelteComponents/AtlassianIcon.svelte";
+import { Age } from "@solidComponents/solidComponents";
+import InvisibleInk from "@svelteComponents/InvisibleInk.svelte";
 
 import { type RepoResult, fetchRepos } from "@utils/github";
 
@@ -25,27 +25,12 @@ const repoResult: RepoResult = await fetchRepos();
             Howdy 👋🏼 I'm Aniket,<br />
             Software Engineer
             <span class="inline-block sm:whitespace-nowrap">
-              @<a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://www.atlassian.com"
-                class="hover-scale inline-block align-middle"
+              <span
+                class="hover-scale hover-glow ml-1 inline-flex items-center gap-1.5 rounded-full bg-secondary-light px-3 py-1 align-middle dark:bg-secondary-dark sm:ml-2 sm:gap-2 sm:px-4 md:ml-4"
               >
-                <IconPill
-                  client:load
-                  class="hover-glow ml-1 inline rounded-full py-1 sm:ml-2 md:ml-4 bg-secondary-light dark:bg-secondary-dark"
-                >
-                  <span class="pl-2 sm:pl-4">
-                    <AtlassianIcon
-                      client:load
-                      base={15}
-                      scale={5}
-                      style="inline align-baseline"
-                    />
-                  </span>
-                  <span class="pr-2 sm:pr-4">Atlassian</span>
-                </IconPill>
-              </a>
+                <span>Working in</span>
+                <InvisibleInk client:load text="stealth" />
+              </span>
             </span>
           </h1>
 
