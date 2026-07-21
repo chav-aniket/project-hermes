@@ -53,7 +53,7 @@ The theme transition uses a JS-driven overlay system with CSS animations:
 
 ### CSS Variables (defined in Layout.astro)
 ```css
---arc-duration: 2500ms;    /* Theme transition duration */
+--arc-duration: 2000ms;    /* Theme transition duration */
 --default-shadow: ...;      /* Box shadow for [data-theme-shadow] elements */
 --theme-bg: ...;            /* Current theme background */
 --theme-tertiary: ...;      /* Current theme accent */

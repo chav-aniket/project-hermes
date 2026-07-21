@@ -16,7 +16,7 @@ export const FILL_COLORS = {
 } as const;
 
 export const TIMING = {
-  phase: 2500, // Debugging: slowed down to observe animation
+  phase: 2000, // Theme transition duration (keep in sync with --arc-duration)
   pause: 300,
 } as const;
 

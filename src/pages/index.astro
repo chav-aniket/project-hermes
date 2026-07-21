@@ -9,13 +9,20 @@ import InvisibleInk from "@svelteComponents/InvisibleInk.svelte";
 import { type RepoResult, fetchRepos } from "@utils/github";
 
 const repoResult: RepoResult = await fetchRepos();
+
+// Cache the rendered page at the edge so we don't hit the GitHub API on every
+// request. Serve stale while revalidating in the background for a day.
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, s-maxage=3600, stale-while-revalidate=86400",
+);
 ---
 
 <Layout title="Homepage">
   <main
     class="m-5 object-center text-textLight dark:text-textDark sm:m-8 md:m-12 lg:m-20 xl:m-32"
   >
-    <div class="2x:flex-row 2xl:flex">
+    <div class="2xl:flex 2xl:flex-row">
       <div class="flex flex-col">
         <Nav />
         <div>
@@ -26,7 +33,7 @@ const repoResult: RepoResult = await fetchRepos();
             Software Developer
             <span class="inline-block sm:whitespace-nowrap">
               @<InvisibleInk
-                client:load
+                client:visible
                 text="stealth"
                 class="ml-1 rounded-full px-3 py-1 align-middle sm:ml-2 sm:px-4 md:ml-4"
               />
