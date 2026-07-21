@@ -3,8 +3,8 @@ import Layout from "@layouts/Layout.astro";
 
 import Nav from "@astroComponents/Nav.astro";
 import Repo from "@astroComponents/Repo.astro";
-import { Age, IconPill } from "@solidComponents/solidComponents";
-import AtlassianIcon from "@svelteComponents/AtlassianIcon.svelte";
+import { Age } from "@solidComponents/solidComponents";
+import InvisibleInk from "@svelteComponents/InvisibleInk.svelte";
 
 import { type RepoResult, fetchRepos } from "@utils/github";
 
@@ -23,29 +23,13 @@ const repoResult: RepoResult = await fetchRepos();
             class="mb-5 mt-5 text-lg font-bold leading-relaxed sm:mb-10 sm:text-2xl md:text-3xl lg:text-4xl lg:leading-normal xl:text-5xl xl:leading-normal"
           >
             Howdy 👋🏼 I'm Aniket,<br />
-            Software Engineer
+            Software Developer
             <span class="inline-block sm:whitespace-nowrap">
-              @<a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://www.atlassian.com"
-                class="hover-scale inline-block align-middle"
-              >
-                <IconPill
-                  client:load
-                  class="hover-glow ml-1 inline rounded-full py-1 sm:ml-2 md:ml-4 bg-secondary-light dark:bg-secondary-dark"
-                >
-                  <span class="pl-2 sm:pl-4">
-                    <AtlassianIcon
-                      client:load
-                      base={15}
-                      scale={5}
-                      style="inline align-baseline"
-                    />
-                  </span>
-                  <span class="pr-2 sm:pr-4">Atlassian</span>
-                </IconPill>
-              </a>
+              @<InvisibleInk
+                client:load
+                text="stealth"
+                class="ml-1 rounded-full px-3 py-1 align-middle sm:ml-2 sm:px-4 md:ml-4"
+              />
             </span>
           </h1>
 
