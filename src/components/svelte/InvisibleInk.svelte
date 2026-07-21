@@ -60,6 +60,43 @@ onMount(() => {
 		fill = getComputedStyle(textEl).color;
 	};
 
+	// SPIKE (theme-transition="vt"): during a View Transition theme wipe this
+	// canvas opts out of the browser snapshot (view-transition-name) and stays
+	// live, so it must split itself across the wipe front: particles ahead of
+	// the front keep the OLD ink colour, particles behind it take the new one.
+	// Geometry mirrors the clip-path keyframes in themeVT.ts (viewport %).
+	type Wipe = {
+		mode: "arc" | "wave";
+		duration: number;
+		start: number | null;
+		oldFill: string;
+		rect: DOMRect;
+	};
+	let wipe: Wipe | null = null;
+
+	// Returns eased front progress, or null when no wipe is running.
+	const wipeProgress = (): number | null => {
+		if (!wipe) return null;
+		if (wipe.start == null) return 0; // snapshot pending: everything old
+		const p = Math.min((performance.now() - wipe.start) / wipe.duration, 1);
+		return 1 - (1 - p) ** 3; // same ease-out cubic as the clip animation
+	};
+
+	// Is this particle behind the front (i.e. showing the NEW theme)?
+	const behindFront = (w: Wipe, eased: number, px: number, py: number) => {
+		const nx = ((w.rect.left + px) / window.innerWidth) * 100;
+		const ny = ((w.rect.top + py) / window.innerHeight) * 100;
+		if (w.mode === "arc") {
+			// Wedge hinged at (50%, 100%) sweeping 270° (left) → 450° (right).
+			let deg = (Math.atan2(ny - 100, nx - 50) * 180) / Math.PI + 90;
+			if (deg < 270) deg += 360;
+			return deg <= 270 + eased * 180;
+		}
+		// Wave line descending from the top.
+		const wave = Math.sin((nx / 100) * Math.PI * 4) * 3;
+		return ny <= eased * 100 + wave;
+	};
+
 	const build = () => {
 		const rect = host.getBoundingClientRect();
 		width = Math.max(1, Math.ceil(rect.width));
@@ -92,6 +129,7 @@ onMount(() => {
 		ctx.clearRect(0, 0, width, height);
 		ctx.fillStyle = fill;
 		tick += 1;
+		const eased = wipeProgress();
 		for (let i = 0; i < particles.length; i++) {
 			const p = particles[i];
 			if (animated) {
@@ -101,6 +139,13 @@ onMount(() => {
 				else if (p.x > width) p.x -= width;
 				if (p.y < 0) p.y += height;
 				else if (p.y > height) p.y -= height;
+			}
+			if (wipe && eased != null) {
+				// fill already holds the NEW colour (MutationObserver fired on
+				// the class flip); oldFill is what we cached just before it.
+				ctx.fillStyle = behindFront(wipe, eased, p.x, p.y)
+					? fill
+					: wipe.oldFill;
 			}
 			const a = animated ? 0.35 + 0.45 * Math.sin(p.phase + tick * p.tw) : 0.45;
 			ctx.globalAlpha = a < 0 ? 0 : a;
@@ -176,10 +221,37 @@ onMount(() => {
 		attributeFilter: ["class"],
 	});
 
+	// SPIKE: theme-wipe fires just before the class flips (cache the old
+	// colour), theme-wipe-start once the View Transition's clip animation
+	// begins (sync clocks), theme-wipe-end when it settles.
+	const onWipePrepare = (e: Event) => {
+		if (reduce) return; // reduced motion: instant flip via the observer
+		const d = (e as CustomEvent).detail;
+		wipe = {
+			mode: d.mode,
+			duration: d.duration,
+			start: null,
+			oldFill: fill,
+			rect: host.getBoundingClientRect(),
+		};
+	};
+	const onWipeStart = (e: Event) => {
+		if (wipe) wipe.start = (e as CustomEvent).detail.start;
+	};
+	const onWipeEnd = () => {
+		wipe = null;
+	};
+	window.addEventListener("theme-wipe", onWipePrepare);
+	window.addEventListener("theme-wipe-start", onWipeStart);
+	window.addEventListener("theme-wipe-end", onWipeEnd);
+
 	return () => {
 		stop();
 		window.removeEventListener("resize", onResize);
 		document.removeEventListener("visibilitychange", onVisibility);
+		window.removeEventListener("theme-wipe", onWipePrepare);
+		window.removeEventListener("theme-wipe-start", onWipeStart);
+		window.removeEventListener("theme-wipe-end", onWipeEnd);
 		io.disconnect();
 		observer.disconnect();
 	};
@@ -216,6 +288,10 @@ onMount(() => {
     -webkit-user-select: none;
     user-select: none;
     outline: none;
+    /* SPIKE: opt out of the root View Transition snapshot so the canvas
+       stays live during theme wipes (single-instance assumption — duplicate
+       names would make the browser skip the transition). */
+    view-transition-name: invisible-ink;
   }
 
   .ink.interactive {

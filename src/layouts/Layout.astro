@@ -147,6 +147,56 @@ const { title } = Astro.props;
     }
   }
 
+  /*
+   * SPIKE: View Transition theme toggle (localStorage theme-transition="vt").
+   * The html.theme-vt* classes exist only while themeVT.ts runs a transition,
+   * so none of this affects the default overlay path or other view
+   * transitions. @keyframes theme-vt-arc / theme-vt-wave are generated and
+   * injected by themeVT.ts (sampled polygons with easing baked in).
+   */
+
+  /* Keep the page interactive during the transition (the ::view-transition
+     overlay swallows hit-testing by default). */
+  html.theme-vt::view-transition {
+    pointer-events: none;
+  }
+
+  /* Old snapshot stays fully opaque underneath; new live view is revealed by
+     the clip-path animation on top. Kill the default cross-fade and
+     plus-lighter blending. */
+  html.theme-vt::view-transition-old(root),
+  html.theme-vt::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+  html.theme-vt::view-transition-image-pair(root) {
+    isolation: auto;
+  }
+  html.theme-vt-arc::view-transition-new(root) {
+    animation: theme-vt-arc var(--arc-duration) linear forwards;
+  }
+  html.theme-vt-wave::view-transition-new(root) {
+    animation: theme-vt-wave var(--arc-duration) linear forwards;
+  }
+
+  /* Live opt-outs: elements with their own view-transition-name are excluded
+     from the root snapshot; hiding their old image and disabling their
+     animations means the LIVE element shows for the whole transition
+     (equivalent of the z-index elevation used by the overlay path). */
+  [data-theme-toggle] {
+    view-transition-name: theme-toggle;
+  }
+  html.theme-vt::view-transition-old(theme-toggle),
+  html.theme-vt::view-transition-old(invisible-ink) {
+    display: none;
+  }
+  html.theme-vt::view-transition-new(theme-toggle),
+  html.theme-vt::view-transition-group(theme-toggle),
+  html.theme-vt::view-transition-new(invisible-ink),
+  html.theme-vt::view-transition-group(invisible-ink) {
+    animation: none;
+  }
+
   code {
     font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
       DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
