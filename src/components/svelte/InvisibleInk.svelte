@@ -2,27 +2,33 @@
 import { onMount } from "svelte";
 
 // Renders `text` hidden beneath an iMessage-style "invisible ink" cloud of
-// shimmering particles. Hover, focus or tap to dissolve the ink and reveal it.
+// shimmering particles, clipped to a pill shape. When `reveal` is enabled,
+// hover/focus/tap dissolves the ink to reveal the text; otherwise the ink
+// stays put and nothing behind it is shown.
 export let text: string;
+
+// Optional props are derived from $$props so their default values don't get
+// rewritten to `const` by useConst / prefer-const autofixers — which would
+// turn these into non-settable exports and silently drop the parent's props.
+// `reveal` gates the hover/focus/tap reveal; `class` forwards pill styling.
+$: reveal = Boolean($$props.reveal);
+$: className = typeof $$props.class === "string" ? $$props.class : "";
 
 let host: HTMLSpanElement;
 let textEl: HTMLSpanElement;
 let canvas: HTMLCanvasElement;
 let revealed = false;
 
-const reveal = () => {
-	revealed = true;
+const onReveal = () => {
+	if (reveal) revealed = true;
 };
-const hide = () => {
-	revealed = false;
-};
-const toggle = () => {
-	revealed = !revealed;
+const onHide = () => {
+	if (reveal) revealed = false;
 };
 const onKeydown = (e: KeyboardEvent) => {
-	if (e.key === "Enter" || e.key === " ") {
+	if (reveal && (e.key === "Enter" || e.key === " ")) {
 		e.preventDefault();
-		toggle();
+		revealed = !revealed;
 	}
 };
 
@@ -147,18 +153,18 @@ onMount(() => {
 </script>
 
 <span
-  class="ink"
+  class={`ink ${className}`}
   class:revealed
+  class:interactive={reveal}
   bind:this={host}
-  role="button"
-  tabindex="0"
+  role={reveal ? "button" : undefined}
+  tabindex={reveal ? 0 : undefined}
   aria-label={text}
-  aria-pressed={revealed}
-  on:mouseenter={reveal}
-  on:mouseleave={hide}
-  on:focusin={reveal}
-  on:focusout={hide}
-  on:click={toggle}
+  aria-pressed={reveal ? revealed : undefined}
+  on:mouseenter={onReveal}
+  on:mouseleave={onHide}
+  on:focusin={onReveal}
+  on:focusout={onHide}
   on:keydown={onKeydown}
 >
   <span class="ink-text" bind:this={textEl} aria-hidden="true">{text}</span>
@@ -168,12 +174,18 @@ onMount(() => {
 <style>
   .ink {
     position: relative;
-    display: inline-block;
-    cursor: pointer;
-    vertical-align: baseline;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    vertical-align: middle;
     -webkit-user-select: none;
     user-select: none;
     outline: none;
+  }
+
+  .ink.interactive {
+    cursor: pointer;
   }
 
   .ink-text {
